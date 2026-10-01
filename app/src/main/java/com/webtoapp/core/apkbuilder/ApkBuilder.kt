@@ -1023,7 +1023,7 @@ class ApkBuilder(private val context: Context) {
             try {
                 signer.sign(
                     unsignedApk, signedApk,
-                    targetSdk = config.targetSdkOverride ?: 28,
+                    targetSdk = config.targetSdkOverride ?: 35,
                     identity = perAppIdentity?.toSigningIdentity()
                 )
             } catch (e: Exception) {
@@ -1484,13 +1484,13 @@ class ApkBuilder(private val context: Context) {
                         }
 
                         perfConfig != null && perfConfig.removeUnusedResources &&
-                        com.webtoapp.core.linux.PerformanceOptimizer.getRemovableEntries(entry.name, config.appType) -> {
+                        com.webtoapp.core.linux.PerformanceOptimizerApk.getRemovableEntries(entry.name, config.appType) -> {
                             AppLogger.d("ApkBuilder", "Perf: removed unused resource: ${entry.name}")
                         }
 
                         perfConfig != null && entry.name.startsWith("assets/") && isOptimizableAsset(entry.name) -> {
                             val originalData = zipIn.getInputStream(entry).readBytes()
-                            val optimizedData = com.webtoapp.core.linux.PerformanceOptimizer.optimizeBytesForApk(
+                            val optimizedData = com.webtoapp.core.linux.PerformanceOptimizerApk.optimizeBytesForApk(
                                 context, entry.name.substringAfterLast("/"), originalData, perfConfig
                             )
                             writeEntryDeflated(zipOut, entry.name, optimizedData)
@@ -1717,10 +1717,6 @@ class ApkBuilder(private val context: Context) {
     }
 
     private fun isRequiredNativeLib(libName: String, config: ApkConfig): Boolean {
-
-        if (libName == "libc++_shared.so") {
-            return true
-        }
 
         if (libName == "libperf_engine.so" || libName == "libbrowser_kernel.so") {
             return false
@@ -2164,17 +2160,6 @@ class ApkBuilder(private val context: Context) {
     }
 
 
-    /**
-     * Fingerprint of the native libs that would be injected into a NODEJS_APP export
-     * (libnode.so, libnode_bridge.so, libc++_shared.so). Fed into the incremental build
-     * cache's identity fingerprint so a host upgrade that ships a new/realigned libnode.so
-     * invalidates the cached unsigned APK — otherwise REUSE_UNSIGNED serves a stale lib
-     * that dlopen rejects on Android 15+ (16KB-page) devices.
-     *
-     * Returns null for non-Node.js apps (no native lib injection), which is treated as
-     * "not applicable" by the cache and does not affect other app types' cache keys.
-     */
-
     @Volatile
     private var cachedHostVersionCode: Int? = null
 
@@ -2250,8 +2235,8 @@ class ApkBuilder(private val context: Context) {
 
     /**
      * Forced HTTP/3 embeds the Cronet native library so the generated app's bridge can
-     * route through Chromium's own QUIC stack. Mirrors injectNodeJsNativeLibs: a missing
-     * runtime fails the build instead of shipping a silently degraded app.
+     * route through Chromium's own QUIC stack. A missing runtime fails the build instead
+     * of shipping a silently degraded app.
      */
     private fun injectCronetNativeLib(zipOut: ZipOutputStream) {
         val cronet = com.webtoapp.core.webview.CronetDependencyManager

@@ -1300,8 +1300,8 @@ data class ApkExportConfig(
     /**
      * Override the generated APK's `targetSdkVersion` (manifest `<uses-sdk>`).
      *
-     * Why: the shell template ships targetSdk = 28 for historical fork+exec runtimes that
-     * no longer exist. `null`/`<= 0` means "leave the template's 28 alone".
+     * Why: the shell template ships targetSdk = 35; this pins a different value for
+     * compat or store requirements. `null`/`<= 0` means "leave the template's 35 alone".
      */
     val targetSdk: Int? = null,
 

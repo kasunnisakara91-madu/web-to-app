@@ -1484,19 +1484,6 @@ object StringsE {
         AppLanguage.KOREAN -> "스크롤 최적화, 메모리 관리, CDN 사전 연결 스크립트 주입"
     }
 
-    val perfOptimizeComplete: String get() = when (Strings.lang) {
-        AppLanguage.CHINESE -> "性能优化完成"
-        AppLanguage.ENGLISH -> "Performance optimization complete"
-        AppLanguage.ARABIC -> "اكتمل تحسين الأداء"
-        AppLanguage.PORTUGUESE -> "Otimização de desempenho concluída"
-        AppLanguage.SPANISH -> "Optimización de rendimiento completa"
-        AppLanguage.FRENCH -> "Optimisation des performances terminée"
-        AppLanguage.GERMAN -> "Leistungsoptimierung abgeschlossen"
-        AppLanguage.RUSSIAN -> "Оптимизация производительности завершена"
-        AppLanguage.JAPANESE -> "パフォーマンス最適化完了"
-        AppLanguage.KOREAN -> "성능 최적화 완료"
-    }
-
     val threatResponse: String get() = when (Strings.lang) {
         AppLanguage.CHINESE -> "威胁响应策略"
         AppLanguage.ENGLISH -> "Threat Response Strategy"
@@ -7683,90 +7670,6 @@ object StringsE {
         AppLanguage.KOREAN -> "진입 파일을 찾을 수 없습니다"
     }
 
-    val perfScanFiles: String get() = when (Strings.lang) {
-        AppLanguage.CHINESE -> "扫描文件..."
-        AppLanguage.ENGLISH -> "Scanning files..."
-        AppLanguage.ARABIC -> "فحص الملفات..."
-        AppLanguage.PORTUGUESE -> "Escaneando arquivos..."
-        AppLanguage.SPANISH -> "Escaneando archivos..."
-        AppLanguage.FRENCH -> "Analyse des fichiers..."
-        AppLanguage.GERMAN -> "Dateien scannen..."
-        AppLanguage.RUSSIAN -> "Сканирование файлов..."
-        AppLanguage.JAPANESE -> "ファイルをスキャン中..."
-        AppLanguage.KOREAN -> "파일 스캔 중..."
-    }
-    val perfCompressImage: String get() = when (Strings.lang) {
-        AppLanguage.CHINESE -> "压缩图片: %s"
-        AppLanguage.ENGLISH -> "Compressing image: %s"
-        AppLanguage.ARABIC -> "ضغط الصورة: %s"
-        AppLanguage.PORTUGUESE -> "Comprimindo imagem: %s"
-        AppLanguage.SPANISH -> "Comprimiendo imagen: %s"
-        AppLanguage.FRENCH -> "Compression de l'image : %s"
-        AppLanguage.GERMAN -> "Bild komprimieren: %s"
-        AppLanguage.RUSSIAN -> "Сжатие изображения: %s"
-        AppLanguage.JAPANESE -> "画像を圧縮中: %s"
-        AppLanguage.KOREAN -> "이미지 압축 중: %s"
-    }
-    val perfCompressCode: String get() = when (Strings.lang) {
-        AppLanguage.CHINESE -> "压缩代码..."
-        AppLanguage.ENGLISH -> "Compressing code..."
-        AppLanguage.ARABIC -> "ضغط الكود..."
-        AppLanguage.PORTUGUESE -> "Comprimindo código..."
-        AppLanguage.SPANISH -> "Comprimiendo código..."
-        AppLanguage.FRENCH -> "Compression du code..."
-        AppLanguage.GERMAN -> "Code komprimieren..."
-        AppLanguage.RUSSIAN -> "Сжатие кода..."
-        AppLanguage.JAPANESE -> "コードを圧縮中..."
-        AppLanguage.KOREAN -> "코드 압축 중..."
-    }
-    val perfCompressJs: String get() = when (Strings.lang) {
-        AppLanguage.CHINESE -> "压缩 JS: %s"
-        AppLanguage.ENGLISH -> "Compressing JS: %s"
-        AppLanguage.ARABIC -> "ضغط JS: %s"
-        AppLanguage.PORTUGUESE -> "Comprimindo JS: %s"
-        AppLanguage.SPANISH -> "Comprimiendo JS: %s"
-        AppLanguage.FRENCH -> "Compression JS : %s"
-        AppLanguage.GERMAN -> "JS komprimieren: %s"
-        AppLanguage.RUSSIAN -> "Сжатие JS: %s"
-        AppLanguage.JAPANESE -> "JSを圧縮中: %s"
-        AppLanguage.KOREAN -> "JS 압축 중: %s"
-    }
-    val perfCompressCss: String get() = when (Strings.lang) {
-        AppLanguage.CHINESE -> "压缩 CSS: %s"
-        AppLanguage.ENGLISH -> "Compressing CSS: %s"
-        AppLanguage.ARABIC -> "ضغط CSS: %s"
-        AppLanguage.PORTUGUESE -> "Comprimindo CSS: %s"
-        AppLanguage.SPANISH -> "Comprimiendo CSS: %s"
-        AppLanguage.FRENCH -> "Compression CSS : %s"
-        AppLanguage.GERMAN -> "CSS komprimieren: %s"
-        AppLanguage.RUSSIAN -> "Сжатие CSS: %s"
-        AppLanguage.JAPANESE -> "CSSを圧縮中: %s"
-        AppLanguage.KOREAN -> "CSS 압축 중: %s"
-    }
-    val perfOptimizeSvg: String get() = when (Strings.lang) {
-        AppLanguage.CHINESE -> "优化 SVG..."
-        AppLanguage.ENGLISH -> "Optimizing SVG..."
-        AppLanguage.ARABIC -> "تحسين SVG..."
-        AppLanguage.PORTUGUESE -> "Otimizando SVG..."
-        AppLanguage.SPANISH -> "Optimizando SVG..."
-        AppLanguage.FRENCH -> "Optimisation SVG..."
-        AppLanguage.GERMAN -> "SVG optimieren..."
-        AppLanguage.RUSSIAN -> "Оптимизация SVG..."
-        AppLanguage.JAPANESE -> "SVGを最適化中..."
-        AppLanguage.KOREAN -> "SVG 최적화 중..."
-    }
-    val perfOptimizeHtml: String get() = when (Strings.lang) {
-        AppLanguage.CHINESE -> "优化 HTML..."
-        AppLanguage.ENGLISH -> "Optimizing HTML..."
-        AppLanguage.ARABIC -> "تحسين HTML..."
-        AppLanguage.PORTUGUESE -> "Otimizando HTML..."
-        AppLanguage.SPANISH -> "Optimizando HTML..."
-        AppLanguage.FRENCH -> "Optimisation HTML..."
-        AppLanguage.GERMAN -> "HTML optimieren..."
-        AppLanguage.RUSSIAN -> "Оптимизация HTML..."
-        AppLanguage.JAPANESE -> "HTMLを最適化中..."
-        AppLanguage.KOREAN -> "HTML 최적화 중..."
-    }
     val nodeDownloadEsbuild: String get() = when (Strings.lang) {
         AppLanguage.CHINESE -> "下载 esbuild..."
         AppLanguage.ENGLISH -> "Downloading esbuild..."

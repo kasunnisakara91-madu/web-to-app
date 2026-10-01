@@ -3436,7 +3436,6 @@ object Strings {
     val perfRuntimeOptimize: String get() = StringsE.perfRuntimeOptimize
     val perfRuntimeScript: String get() = StringsE.perfRuntimeScript
     val perfRuntimeScriptHint: String get() = StringsE.perfRuntimeScriptHint
-    val perfOptimizeComplete: String get() = StringsE.perfOptimizeComplete
     val threatResponse: String get() = StringsE.threatResponse
     val threatResponseLogOnly: String get() = StringsE.threatResponseLogOnly
     val threatResponseSilentExit: String get() = StringsE.threatResponseSilentExit
@@ -3955,13 +3954,6 @@ object Strings {
     val pureBuildProjectDirNotFound: String get() = StringsE.pureBuildProjectDirNotFound
     val pureBuildEsbuildUnavailable: String get() = StringsE.pureBuildEsbuildUnavailable
     val pureBuildEntryNotFound: String get() = StringsE.pureBuildEntryNotFound
-    val perfScanFiles: String get() = StringsE.perfScanFiles
-    val perfCompressImage: String get() = StringsE.perfCompressImage
-    val perfCompressCode: String get() = StringsE.perfCompressCode
-    val perfCompressJs: String get() = StringsE.perfCompressJs
-    val perfCompressCss: String get() = StringsE.perfCompressCss
-    val perfOptimizeSvg: String get() = StringsE.perfOptimizeSvg
-    val perfOptimizeHtml: String get() = StringsE.perfOptimizeHtml
     val nodeDownloadEsbuild: String get() = StringsE.nodeDownloadEsbuild
     val nodeVerifyInstall: String get() = StringsE.nodeVerifyInstall
     val nodeEsbuildInstallFailed: String get() = StringsE.nodeEsbuildInstallFailed

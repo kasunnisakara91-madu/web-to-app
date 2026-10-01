@@ -431,7 +431,7 @@ class ApkBuildCacheTest {
         val raisedPlan = cache.plan(
             webApp = webApp,
             packageName = "com.demo.webraised",
-            config = configWith(35),
+            config = configWith(34),
             templateApk = template,
             encryptionEnabled = false,
             abiFilters = emptyList(),

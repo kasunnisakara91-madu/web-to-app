@@ -388,8 +388,8 @@ class ApkBuildCache(private val context: Context) {
         // rejects on Android 15+ (16KB-page) devices.
         parts += "nativeLibs=${nativeLibsFingerprint ?: "none"}"
         // targetSdk override changes the manifest's <uses-sdk>; without this a cached unsigned
-        // APK with targetSdk 28 would be reused after the user raises it, defeating the change.
-        parts += "targetSdk=${config.targetSdkOverride ?: 28}"
+        // APK would be reused after the user changes it, defeating the override.
+        parts += "targetSdk=${config.targetSdkOverride ?: 35}"
         // The derived manifest permission/component set: CONTENT_OVERLAY reuses the
         // cached base's AndroidManifest, so a config change that alters this set without
         // touching any other identity part (e.g. enabling scheduled start →
