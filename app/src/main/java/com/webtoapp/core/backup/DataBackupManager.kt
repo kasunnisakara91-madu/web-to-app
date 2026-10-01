@@ -786,15 +786,6 @@ class DataBackupManager(private val context: Context) {
             }
         }
 
-        if (app.appType == com.webtoapp.data.model.AppType.IMAGE ||
-            app.appType == com.webtoapp.data.model.AppType.VIDEO) {
-            val mediaPath = app.url
-            if (mediaPath.isNotBlank() && File(mediaPath).exists()) {
-                val ext = mediaPath.substringAfterLast('.', "mp4")
-                resources["${MEDIA_DIR}${appId}_media.$ext"] = mediaPath
-            }
-        }
-
         app.mediaConfig?.mediaPath?.let { path ->
             if (File(path).exists()) {
                 val ext = path.substringAfterLast('.', "mp4")
@@ -978,10 +969,7 @@ class DataBackupManager(private val context: Context) {
                 statusBarBackgroundImage = findZipPath(app.webViewConfig.statusBarBackgroundImage),
                 statusBarBackgroundImageDark = findZipPath(app.webViewConfig.statusBarBackgroundImageDark)
             ),
-            url = if (app.appType == com.webtoapp.data.model.AppType.IMAGE ||
-                      app.appType == com.webtoapp.data.model.AppType.VIDEO) {
-                findZipPath(app.url) ?: app.url
-            } else app.url
+            url = app.url
         )
     }
 
@@ -1043,10 +1031,7 @@ class DataBackupManager(private val context: Context) {
                     extractedResources[it] ?: it
                 }
             ),
-            url = if (app.appType == com.webtoapp.data.model.AppType.IMAGE ||
-                      app.appType == com.webtoapp.data.model.AppType.VIDEO) {
-                extractedResources[app.url] ?: app.url
-            } else app.url
+            url = app.url
         )
     }
 

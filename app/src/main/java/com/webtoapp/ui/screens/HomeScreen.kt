@@ -105,15 +105,9 @@ import com.webtoapp.ui.design.WtaBadge
 fun HomeScreen(
     viewModel: MainViewModel,
     onCreateApp: () -> Unit,
-    onCreateMediaApp: () -> Unit = {},
     onCreateGalleryApp: () -> Unit = {},
     onCreateHtmlApp: () -> Unit = {},
     onCreateFrontendApp: () -> Unit = {},
-    onCreateNodeJsApp: () -> Unit = {},
-    onCreateWordPressApp: () -> Unit = {},
-    onCreatePhpApp: () -> Unit = {},
-    onCreatePythonApp: () -> Unit = {},
-    onCreateGoApp: () -> Unit = {},
     onCreateMultiWebApp: () -> Unit = {},
     onCreateOfflinePack: () -> Unit = {},
     onEditApp: (WebApp) -> Unit,
@@ -123,11 +117,8 @@ fun HomeScreen(
     onOpenAiSettings: () -> Unit = {},
     onOpenAgent: () -> Unit = {},
     onOpenPlugins: () -> Unit = {},
-    onOpenLinuxEnvironment: () -> Unit = {},
     onOpenBrowserKernel: () -> Unit = {},
     onOpenHostsAdBlock: () -> Unit = {},
-    onOpenRuntimeDeps: () -> Unit = {},
-    onOpenPortManager: () -> Unit = {},
     onOpenStats: () -> Unit = {},
     onOpenAbout: () -> Unit = {},
     onOpenSettings: () -> Unit = {},
@@ -189,12 +180,6 @@ fun HomeScreen(
         CreateActionItem(Strings.appTypeHtml, R.drawable.ic_type_html, onCreateHtmlApp),
         CreateActionItem(Strings.websiteOfflinePack, R.drawable.ic_type_offline_pack, onCreateOfflinePack),
         CreateActionItem(Strings.appTypeFrontend, R.drawable.ic_type_frontend, onCreateFrontendApp),
-        CreateActionItem(Strings.appTypePhp, R.drawable.ic_type_php, onCreatePhpApp),
-        CreateActionItem(Strings.appTypeWordPress, R.drawable.ic_type_wordpress, onCreateWordPressApp),
-        CreateActionItem(Strings.appTypeNodeJs, R.drawable.ic_type_nodejs, onCreateNodeJsApp),
-        CreateActionItem(Strings.appTypePython, R.drawable.ic_type_python, onCreatePythonApp),
-        CreateActionItem(Strings.appTypeGo, R.drawable.ic_type_go, onCreateGoApp),
-        CreateActionItem(Strings.createMediaApp, R.drawable.ic_type_media, onCreateMediaApp),
         CreateActionItem(Strings.appTypeGallery, R.drawable.ic_type_gallery, onCreateGalleryApp)
     )
 
@@ -342,21 +327,6 @@ fun HomeScreen(
                                 text = { Text(Strings.menuAppModifier) },
                                 onClick = { showMoreMenu = false; onOpenAppModifier() },
                                 leadingIcon = { Icon(Icons.Outlined.AppShortcut, null, Modifier.size(20.dp)) }
-                            )
-                            DropdownMenuItem(
-                                text = { Text(Strings.menuLinuxEnvironment) },
-                                onClick = { showMoreMenu = false; onOpenLinuxEnvironment() },
-                                leadingIcon = { Icon(Icons.Outlined.Terminal, null, Modifier.size(20.dp)) }
-                            )
-                            DropdownMenuItem(
-                                text = { Text(Strings.menuRuntimeDeps) },
-                                onClick = { showMoreMenu = false; onOpenRuntimeDeps() },
-                                leadingIcon = { Icon(Icons.Outlined.Memory, null, Modifier.size(20.dp)) }
-                            )
-                            DropdownMenuItem(
-                                text = { Text(Strings.menuPortManager) },
-                                onClick = { showMoreMenu = false; onOpenPortManager() },
-                                leadingIcon = { Icon(Icons.Outlined.Router, null, Modifier.size(20.dp)) }
                             )
                             HorizontalDivider()
                             DropdownMenuItem(
@@ -1123,12 +1093,11 @@ fun AppCard(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val colors = MaterialTheme.colorScheme
-    val secondaryText = when (app.appType) {
-        com.webtoapp.data.model.AppType.IMAGE -> app.url.ifBlank { Strings.appTypeImage }
-        com.webtoapp.data.model.AppType.VIDEO -> app.url.ifBlank { Strings.appTypeVideo }
-        com.webtoapp.data.model.AppType.HTML,
-        com.webtoapp.data.model.AppType.FRONTEND -> app.url.ifBlank { Strings.appTypeHtml }
-        com.webtoapp.data.model.AppType.GALLERY -> app.url.ifBlank { Strings.appTypeGallery }
+    val secondaryText = when {
+        !app.appType.isSupported -> app.url.ifBlank { Strings.appTypeRemoved }
+        app.appType == com.webtoapp.data.model.AppType.HTML ||
+            app.appType == com.webtoapp.data.model.AppType.FRONTEND -> app.url.ifBlank { Strings.appTypeHtml }
+        app.appType == com.webtoapp.data.model.AppType.GALLERY -> app.url.ifBlank { Strings.appTypeGallery }
         else -> app.url
     }
 
@@ -1163,17 +1132,11 @@ fun AppCard(
                     } else {
                         val defaultIconRes = when (app.appType) {
                             com.webtoapp.data.model.AppType.WEB -> R.drawable.ic_type_web
-                            com.webtoapp.data.model.AppType.IMAGE -> R.drawable.ic_type_media
-                            com.webtoapp.data.model.AppType.VIDEO -> R.drawable.ic_type_media
                             com.webtoapp.data.model.AppType.HTML -> R.drawable.ic_type_html
                             com.webtoapp.data.model.AppType.GALLERY -> R.drawable.ic_type_gallery
                             com.webtoapp.data.model.AppType.FRONTEND -> R.drawable.ic_type_frontend
-                            com.webtoapp.data.model.AppType.WORDPRESS -> R.drawable.ic_type_wordpress
-                            com.webtoapp.data.model.AppType.NODEJS_APP -> R.drawable.ic_type_nodejs
-                            com.webtoapp.data.model.AppType.PHP_APP -> R.drawable.ic_type_php
-                            com.webtoapp.data.model.AppType.PYTHON_APP -> R.drawable.ic_type_python
-                            com.webtoapp.data.model.AppType.GO_APP -> R.drawable.ic_type_go
                             com.webtoapp.data.model.AppType.MULTI_WEB -> R.drawable.ic_type_multi_web
+                            else -> R.drawable.ic_type_web
                         }
                         Icon(
                             painter = painterResource(defaultIconRes),
@@ -1292,17 +1255,11 @@ fun AppCard(
                         painter = painterResource(
                             when (app.appType) {
                                 com.webtoapp.data.model.AppType.WEB -> R.drawable.ic_type_web
-                                com.webtoapp.data.model.AppType.IMAGE -> R.drawable.ic_type_media
-                                com.webtoapp.data.model.AppType.VIDEO -> R.drawable.ic_type_media
                                 com.webtoapp.data.model.AppType.HTML -> R.drawable.ic_type_html
                                 com.webtoapp.data.model.AppType.GALLERY -> R.drawable.ic_type_gallery
                                 com.webtoapp.data.model.AppType.FRONTEND -> R.drawable.ic_type_frontend
-                                com.webtoapp.data.model.AppType.WORDPRESS -> R.drawable.ic_type_wordpress
-                                com.webtoapp.data.model.AppType.NODEJS_APP -> R.drawable.ic_type_nodejs
-                                com.webtoapp.data.model.AppType.PHP_APP -> R.drawable.ic_type_php
-                                com.webtoapp.data.model.AppType.PYTHON_APP -> R.drawable.ic_type_python
-                                com.webtoapp.data.model.AppType.GO_APP -> R.drawable.ic_type_go
                                 com.webtoapp.data.model.AppType.MULTI_WEB -> R.drawable.ic_type_multi_web
+                                else -> R.drawable.ic_type_web
                             }
                         ),
                         contentDescription = Strings.btnPreview,
@@ -1437,14 +1394,6 @@ fun AppTypeChip(appType: com.webtoapp.data.model.AppType) {
             Icons.Outlined.Public,
             Strings.appTypeWeb
         )
-        com.webtoapp.data.model.AppType.IMAGE -> Pair(
-            Icons.Outlined.Image,
-            Strings.appTypeImage
-        )
-        com.webtoapp.data.model.AppType.VIDEO -> Pair(
-            Icons.Outlined.VideoLibrary,
-            Strings.appTypeVideo
-        )
         com.webtoapp.data.model.AppType.HTML -> Pair(
             Icons.Outlined.Html,
             Strings.appTypeHtml
@@ -1457,29 +1406,13 @@ fun AppTypeChip(appType: com.webtoapp.data.model.AppType) {
             Icons.Outlined.Rocket,
             Strings.appTypeFrontend
         )
-        com.webtoapp.data.model.AppType.WORDPRESS -> Pair(
-            Icons.Outlined.Newspaper,
-            Strings.appTypeWordPress
-        )
-        com.webtoapp.data.model.AppType.NODEJS_APP -> Pair(
-            Icons.Outlined.Terminal,
-            Strings.appTypeNodeJs
-        )
-        com.webtoapp.data.model.AppType.PHP_APP -> Pair(
-            Icons.Outlined.DataObject,
-            Strings.appTypePhp
-        )
-        com.webtoapp.data.model.AppType.PYTHON_APP -> Pair(
-            Icons.Outlined.Psychology,
-            Strings.appTypePython
-        )
-        com.webtoapp.data.model.AppType.GO_APP -> Pair(
-            Icons.Outlined.Speed,
-            Strings.appTypeGo
-        )
         com.webtoapp.data.model.AppType.MULTI_WEB -> Pair(
             Icons.Outlined.Language,
             Strings.appTypeMultiWeb
+        )
+        else -> Pair(
+            Icons.Outlined.Block,
+            Strings.appTypeRemoved
         )
     }
 

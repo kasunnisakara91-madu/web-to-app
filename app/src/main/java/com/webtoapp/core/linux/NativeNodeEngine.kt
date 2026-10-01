@@ -172,16 +172,25 @@ object NativeNodeEngine {
 
         AppLogger.d(TAG, "执行: ${cmdList.joinToString(" ")}")
 
-        val processBuilder = ProcessBuilder(cmdList)
-        processBuilder.directory(workingDir)
-        processBuilder.redirectErrorStream(false)
-
-        val processEnv = processBuilder.environment()
-        processEnv["HOME"] = context.filesDir.absolutePath
-        processEnv["TMPDIR"] = context.cacheDir.absolutePath
+        val processEnv = mutableMapOf(
+            "HOME" to context.filesDir.absolutePath,
+            "TMPDIR" to context.cacheDir.absolutePath
+        )
         env.forEach { (k, v) -> processEnv[k] = v }
 
-        val process = processBuilder.start()
+        val launch = HostProcessLauncher.start(
+            context = context,
+            command = cmdList,
+            env = processEnv,
+            cwd = workingDir,
+            runtimeLabel = "esbuild"
+        )
+        val process = launch.process ?: return@withContext ExecutionResult(
+            exitCode = -1,
+            stdout = "",
+            stderr = launch.error ?: "esbuild launch failed",
+            duration = System.currentTimeMillis() - startTime
+        )
 
         val stdout = StringBuilder()
         val stderr = StringBuilder()

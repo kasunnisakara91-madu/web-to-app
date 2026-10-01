@@ -19,7 +19,7 @@ object HostProcessLauncher {
         command: List<String>,
         env: Map<String, String>,
         cwd: File?,
-        runtimeLabel: String = "PHP"
+        runtimeLabel: String = "toolchain"
     ): Result {
         val wxRestricted = !RuntimeExecPolicy.canExecAppDataBinaries(context)
         if (!wxRestricted) {

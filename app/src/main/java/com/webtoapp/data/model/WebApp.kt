@@ -11,11 +11,14 @@ import com.webtoapp.util.toFileSizeString
 
 enum class AppType {
     WEB,
+    // Removed: media-app types were dropped from the product. The constants stay so
+    // persisted projects/backups still decode; everything else treats them as unsupported.
     IMAGE,
     VIDEO,
     HTML,
     GALLERY,
     FRONTEND,
+    // Removed: server-runtime app types (fork+exec) were dropped from the product.
     WORDPRESS,
     NODEJS_APP,
     PHP_APP,
@@ -24,30 +27,28 @@ enum class AppType {
     MULTI_WEB;
 
     /**
-     * Whether this app type execves native server runtimes (Node/PHP/Python/Go/WordPress) from
-     * app-private storage. Such apps must keep `targetSdk <= 28`: starting at targetSdk 29 the
-     * platform enforces write-xor-execute (W^X) on the app's writable data dir, which blocks
-     * execve on the bundled binaries. WebView-only types are free to raise targetSdk for Play.
-     *
-     * Single source of truth for "server runtime app" — also used by the Play policy checker
-     * (was previously duplicated as `AabExportCoordinator.PROCESS_EXEC_APP_TYPES`).
+     * Whether this app type is still creatable/executable in this version. Removed types
+     * keep decoding ([Converters.toAppType] has a WEB fallback anyway) so old projects and
+     * backups don't crash, but they may not be previewed, edited or exported.
      */
-    val requiresProcessExec: Boolean
-        get() = this in REQUIRES_PROCESS_EXEC
+    val isSupported: Boolean
+        get() = this !in REMOVED_TYPES
 
     companion object {
-        val REQUIRES_PROCESS_EXEC: Set<AppType> = setOf(
+        val REMOVED_TYPES: Set<AppType> = setOf(
+            IMAGE,
+            VIDEO,
+            WORDPRESS,
             NODEJS_APP,
             PHP_APP,
             PYTHON_APP,
-            GO_APP,
-            WORDPRESS
+            GO_APP
         )
 
         /**
          * Parse a persisted app-type string (e.g. [MultiWebSite.appType]) into an [AppType],
          * null for unknown values. The multi-web site type is stored as a raw string, so
-         * gating helpers need this bridge to reuse [requiresProcessExec].
+         * gating helpers need this bridge to reuse [isSupported].
          */
         fun fromPersistedName(name: String?): AppType? =
             entries.firstOrNull { it.name.equals(name, ignoreCase = true) }
@@ -74,13 +75,22 @@ data class WebApp(
     val iconPath: String? = null,
     val packageName: String? = null,
     val appType: AppType = AppType.WEB,
+    // Retired: media-app type removed. The column stays so shipped databases open
+    // without a schema bump (same convention as `extensionFabIcon`).
+    @Deprecated("Media app types were removed.")
     val mediaConfig: MediaConfig? = null,
     val galleryConfig: GalleryConfig? = null,
     val htmlConfig: HtmlConfig? = null,
+    // Retired: server-runtime types removed. Columns stay for the same reason.
+    @Deprecated("Server-runtime app types were removed.")
     val wordpressConfig: WordPressConfig? = null,
+    @Deprecated("Server-runtime app types were removed.")
     val nodejsConfig: NodeJsConfig? = null,
+    @Deprecated("Server-runtime app types were removed.")
     val phpAppConfig: PhpAppConfig? = null,
+    @Deprecated("Server-runtime app types were removed.")
     val pythonAppConfig: PythonAppConfig? = null,
+    @Deprecated("Server-runtime app types were removed.")
     val goAppConfig: GoAppConfig? = null,
     val multiWebConfig: MultiWebConfig? = null,
 
@@ -1050,11 +1060,6 @@ data class MultiWebSite(
     val htmlUsesFileScheme: Boolean = false,
     val webViewConfig: WebViewConfig? = null,
     val htmlConfig: HtmlConfig? = null,
-    val nodejsConfig: NodeJsConfig? = null,
-    val phpAppConfig: PhpAppConfig? = null,
-    val pythonAppConfig: PythonAppConfig? = null,
-    val goAppConfig: GoAppConfig? = null,
-    val wordpressConfig: WordPressConfig? = null,
     val siteProjectId: String = ""
 ) {
 
@@ -1295,13 +1300,8 @@ data class ApkExportConfig(
     /**
      * Override the generated APK's `targetSdkVersion` (manifest `<uses-sdk>`).
      *
-     * Why: the shell template ships targetSdk = 28 because fork+exec server runtimes
-     * (Node/PHP/Python/Go/WordPress) need it — targetSdk >= 29 enforces W^X on the app's
-     * writable data dir and blocks execve of the bundled binaries. WebView-only app types
-     * don't need that capability, so they can raise targetSdk for Play Store compliance.
-     *
-     * Enforced: server-runtime app types (`AppType.requiresProcessExec`) ignore this field
-     * and always stay at 28. `null`/`<= 0` means "leave the template's 28 alone".
+     * Why: the shell template ships targetSdk = 28 for historical fork+exec runtimes that
+     * no longer exist. `null`/`<= 0` means "leave the template's 28 alone".
      */
     val targetSdk: Int? = null,
 

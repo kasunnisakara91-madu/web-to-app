@@ -16,4 +16,3 @@
 ## 说明
 
 - 启用任何非 `OFF` 模式都会设置 `keepScreenOn`。
-- 媒体应用有自己的常亮开关(见[媒体](/zh/guide/app-types/media)类型)。

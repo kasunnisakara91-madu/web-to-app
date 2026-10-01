@@ -164,16 +164,12 @@ android {
             // excluded, so it can never load; dead weight carried by every APK.
             excludes += "**/libcrashhelper.so"
 
-            excludes += "**/libphp.so"
-
-            // Host-preview-only user-mode exec loader; generated APKs
-            // (targetSdk 28) always execve directly and never load it.
+            // Host-preview-only user-mode exec loader for downloaded toolchains;
+            // generated APKs never exec app-data binaries and never load it.
             excludes += "**/libstatic_exec.so"
 
             // All shell natives are c++_static (see defaultConfig cmake arguments);
-            // nothing in the template may DT_NEEDED libc++_shared.so. NODEJS_APP
-            // exports still get it — ApkBuilder.injectNodeJsNativeLibs embeds the
-            // host copy for libnode.so.
+            // nothing in the template may DT_NEEDED libc++_shared.so.
             excludes += "**/libc++_shared.so"
 
             // Cronet natives are injected into exported APKs by ApkBuilder when
@@ -226,11 +222,6 @@ val syncShellRuntimeSources by tasks.registering(Sync::class) {
         "**/core/ads/**",
         "**/core/network/**",
         "**/core/errorpage/**",
-        "**/core/golang/**",
-        "**/core/python/**",
-        "**/core/nodejs/**",
-        "**/core/php/**",
-        "**/core/wordpress/**",
         "**/core/autostart/**",
         "**/core/background/**",
         "**/core/linux/**",
@@ -387,13 +378,12 @@ val generateShellStrings by tasks.registering(GenerateShellStringsTask::class) {
 
 tasks.named("preBuild") { dependsOn(generateShellStrings) }
 
-val syncShellRuntimeAssets by tasks.registering(Copy::class) {
+val syncShellRuntimeAssets by tasks.registering(Sync::class) {
     description = "Mirror runtime-only asset files from app module to shell template (single source of truth: app/src/main/assets)."
     group = "build"
 
     from("../app/src/main/assets") {
 
-        include("php_router_server.php")
 
         // GeckoViewEngine installs this built-in WebExtension from
         // resource://android/assets/web_extensions/wta_native_bridge/ when the CORS
@@ -428,102 +418,6 @@ tasks.matching { it.name == "mergeReleaseAssets" }.configureEach {
     }
 }
 
-abstract class SyncNativeExecutableJniLibsTask : DefaultTask() {
-    @get:Input
-    abstract val variantName: org.gradle.api.provider.Property<String>
-
-    @get:Input
-    abstract val buildTypeName: org.gradle.api.provider.Property<String>
-
-    @get:Input
-    abstract val executableName: org.gradle.api.provider.Property<String>
-
-    @get:Input
-    abstract val packagedLibraryName: org.gradle.api.provider.Property<String>
-
-    @get:InputDirectory
-    @get:PathSensitive(PathSensitivity.RELATIVE)
-    abstract val cxxRoot: DirectoryProperty
-
-    @get:OutputDirectory
-    abstract val outputDir: DirectoryProperty
-
-    @TaskAction
-    fun sync() {
-        val cxxRootDir = cxxRoot.asFile.get()
-        if (!cxxRootDir.exists()) {
-            throw GradleException("CXX output not found for ${variantName.get()}: ${cxxRootDir.absolutePath}")
-        }
-
-        val executableTargets = cxxRootDir.walkTopDown()
-            .filter { file ->
-                file.isFile &&
-                    file.name == executableName.get() &&
-                    file.parentFile?.parentFile?.name == "obj"
-            }
-            .toList()
-
-        if (executableTargets.isEmpty()) {
-            throw GradleException("${executableName.get()} artifacts not found for ${variantName.get()} under ${cxxRootDir.absolutePath}")
-        }
-
-        val outputRoot = outputDir.get().asFile
-        outputRoot.deleteRecursively()
-        outputRoot.mkdirs()
-
-        executableTargets.forEach { binary ->
-            val abi = binary.parentFile.name
-            val destFile = outputRoot.resolve("$abi/${packagedLibraryName.get()}")
-            destFile.parentFile.mkdirs()
-            binary.copyTo(destFile, overwrite = true)
-            destFile.setExecutable(true, false)
-        }
-    }
-}
-
-androidComponents {
-    onVariants { variant ->
-        val capName = variant.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-        val variantBuildTypeName = variant.buildType ?: "release"
-        val cxxBuildType = if (variantBuildTypeName.equals("debug", ignoreCase = true)) "Debug" else "RelWithDebInfo"
-        val nativeBuildTaskName = "buildCMake$cxxBuildType"
-        val syncNodeLauncherTask = tasks.register<SyncNativeExecutableJniLibsTask>("syncNodeLauncherJniLibs$capName") {
-            group = "build"
-            description = "Copies ABI-specific node launcher executables into generated jniLibs for ${variant.name}."
-            variantName.set(variant.name)
-            buildTypeName.set(variantBuildTypeName)
-            executableName.set("node_launcher")
-            packagedLibraryName.set("libnode_launcher.so")
-            cxxRoot.set(layout.buildDirectory.dir("intermediates/cxx/$cxxBuildType"))
-            outputDir.set(layout.buildDirectory.dir("generated/jniLibs/nodeLauncher/${variant.name}"))
-            dependsOn(nativeBuildTaskName)
-        }
-
-        val syncGoLoaderTask = tasks.register<SyncNativeExecutableJniLibsTask>("syncGoExecLoaderJniLibs$capName") {
-            group = "build"
-            description = "Copies ABI-specific Go exec loader executables into generated jniLibs for ${variant.name}."
-            variantName.set(variant.name)
-            buildTypeName.set(variantBuildTypeName)
-            executableName.set("go_exec_loader")
-            packagedLibraryName.set("libgo_exec_loader.so")
-            cxxRoot.set(layout.buildDirectory.dir("intermediates/cxx/$cxxBuildType"))
-            outputDir.set(layout.buildDirectory.dir("generated/jniLibs/goExecLoader/${variant.name}"))
-            dependsOn(nativeBuildTaskName)
-        }
-
-        // NOTE: no explicit merge${capName}NativeLibs wiring — the
-        // addGeneratedSourceDirectory calls below already infer task deps.
-
-        variant.sources.jniLibs?.addGeneratedSourceDirectory(
-            syncNodeLauncherTask,
-            SyncNativeExecutableJniLibsTask::outputDir
-        )
-        variant.sources.jniLibs?.addGeneratedSourceDirectory(
-            syncGoLoaderTask,
-            SyncNativeExecutableJniLibsTask::outputDir
-        )
-    }
-}
 
 dependencies {
 

@@ -4,7 +4,7 @@ layout: home
 hero:
   name: WebToApp
   text: Build Android APKs on your phone
-  tagline: An on-device APK workshop that goes far beyond URL wrapping — fork+exec real server runtimes, ship a hardened network stack, and export Play-ready bundles. No PC required.
+  tagline: An on-device APK workshop that goes far beyond URL wrapping — package whole sites and web projects, ship a hardened network stack, and export Play-ready bundles. No PC required.
   image:
     src: /logo.png
     alt: WebToApp
@@ -21,8 +21,8 @@ hero:
 
 features:
   - icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16"/><path d="M4 9h5"/></svg>
-    title: Real on-device runtimes
-    details: Node.js, PHP, Python, Go, and WordPress are fork+exec'd as native binaries straight from app storage — like Termux, packaged into an installable APK.
+    title: Whole sites, packaged
+    details: Local HTML builds, front-end dists, scraped offline packs, multi-site hubs, and media galleries — bundled into the APK and served inside the app.
   - icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 7.6-8 9-4.8-1.4-8-4.5-8-9V6z"/></svg>
     title: Hardened networking
     details: DNS-over-HTTPS, TLS fingerprint spoofing with a local MITM bridge, Encrypted Client Hello (ECH), per-app proxies, and CORS bypass for locked-down SPAs.
@@ -48,11 +48,11 @@ features:
 
 1. **Pick a type**
 
-   Choose from [12 app types](/guide/app-types/) — a plain [Web](/guide/app-types/web) wrapper, [HTML](/guide/app-types/html) or [Frontend](/guide/app-types/frontend) builds, or on-device [Node.js](/guide/app-types/nodejs), [PHP](/guide/app-types/php), [Python](/guide/app-types/python), [Go](/guide/app-types/go), [WordPress](/guide/app-types/wordpress) servers.
+   Choose from [six app types](/guide/app-types/) — a plain [Web](/guide/app-types/web) wrapper, [HTML](/guide/app-types/html) or [Frontend](/guide/app-types/frontend) builds, an [Offline Pack](/guide/app-types/offline-pack) scrape, a [Multi-Web](/guide/app-types/multi-web) hub, or a [Gallery](/guide/app-types/gallery).
 
 2. **Fill in the basics**
 
-   A name, a URL or a project, an icon — then save. Every type shares the same [configuration cards](/guide/config/) for network, privacy, appearance, and runtimes.
+   A name, a URL or a project, an icon — then save. Every type shares the same [configuration cards](/guide/config/) for network, privacy, and appearance.
 
 3. **Build and share**
 
@@ -60,7 +60,7 @@ features:
 
 </div>
 
-## Twelve app types, one builder
+## Six app types, one builder
 
 <div class="wta-types">
 
@@ -90,25 +90,9 @@ Ship React, Vue, or Vite builds as a localhost-served APK.
 
 <div class="wta-tile">
 
-[**Server runtimes**](/guide/app-types/nodejs)
+[**Gallery**](/guide/app-types/gallery)
 
-fork+exec Node.js, PHP, Python, or Go binaries that serve on a local port.
-
-</div>
-
-<div class="wta-tile">
-
-[**WordPress**](/guide/app-types/wordpress)
-
-A full portable WordPress site with PHP and SQLite running on-device.
-
-</div>
-
-<div class="wta-tile">
-
-[**Media and Gallery**](/guide/app-types/media)
-
-Image and video players, albums, and portfolios as standalone apps.
+Albums, portfolios, and offline media viewers as standalone apps.
 
 </div>
 
@@ -122,7 +106,7 @@ Image and video players, albums, and portfolios as standalone apps.
 
 [**Agent**](/guide/more-features/agent)
 
-A tool-calling assistant with up to 57 built-in tools that can build, edit, and operate the whole app.
+A tool-calling assistant with dozens of built-in tools that can build, edit, and operate the whole app.
 
 </div>
 
@@ -144,17 +128,9 @@ Inject JS/CSS, userscripts, or MV3 Chrome extensions into any generated app.
 
 <div class="wta-tile">
 
-[**Linux environment**](/guide/more-features/linux-environment)
-
-A Termux-style environment with real toolchains for building and running projects.
-
-</div>
-
-<div class="wta-tile">
-
 [**Port manager**](/guide/more-features/port-manager)
 
-Conflict policies, real stop handlers, and DNS bridging for every local server runtime.
+Port coordination for local sites — conflict policies and clean release on stop.
 
 </div>
 
@@ -172,17 +148,17 @@ Clone and rebrand installed APKs, batch-import definitions, export templates.
 
 <div class="wta-stats">
 
-<div class="wta-stat"><b>12</b><span>app types</span></div>
-
-<div class="wta-stat"><b>57</b><span>agent tools max</span></div>
+<div class="wta-stat"><b>6</b><span>app types</span></div>
 
 <div class="wta-stat"><b>10</b><span>UI languages</span></div>
 
 <div class="wta-stat"><b>20</b><span>ad-filter lists</span></div>
 
+<div class="wta-stat"><b>100%</b><span>on-device builds</span></div>
+
 </div>
 
-The builder does its own binary patching — AXML/ARSC rewriting, permission pruning, AES-256-GCM resource encryption, 16 KB page-aligned native libraries — and keeps a low targetSdk shell so fork+exec runtimes keep working. The [developer docs](/developer/architecture) cover the full export pipeline.
+The builder does its own binary patching — AXML/ARSC rewriting, permission pruning, AES-256-GCM resource encryption, 16 KB page-aligned native libraries — and keeps a low targetSdk shell for compatibility. The [developer docs](/developer/architecture) cover the full export pipeline.
 
 <div class="wta-cta">
 

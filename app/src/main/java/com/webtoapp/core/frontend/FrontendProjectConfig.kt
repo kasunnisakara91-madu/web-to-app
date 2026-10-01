@@ -128,11 +128,6 @@ sealed class BuildState {
     object ProcessingOutput : BuildState()
 }
 
-enum class BuildMode {
-    IMPORT_DIST,
-    FULL_BUILD
-}
-
 data class BuildLogEntry(
     val timestamp: Long,
     val level: LogLevel,

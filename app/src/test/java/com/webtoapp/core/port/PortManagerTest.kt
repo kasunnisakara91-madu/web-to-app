@@ -27,10 +27,10 @@ class PortManagerTest {
 
     @Test
     fun `allocate prefers free preferred port`() {
-        val preferred = PortManager.PortRange.NODEJS.start + 3
+        val preferred = PortManager.PortRange.LOCAL_HTTP.start + 3
         val allocated = PortManager.allocate(
-            PortManager.PortRange.NODEJS,
-            "nodejs:test",
+            PortManager.PortRange.LOCAL_HTTP,
+            "localhttp:test",
             preferredPort = preferred
         )
         assertThat(allocated).isEqualTo(preferred)
@@ -71,28 +71,28 @@ class PortManagerTest {
 
     @Test
     fun `auto kill takes preferred after releasing holder`() {
-        val preferred = PortManager.PortRange.PHP.start + 5
-        PortManager.allocate(PortManager.PortRange.PHP, "php:old", preferred)
+        val preferred = PortManager.PortRange.GENERAL.start + 5
+        PortManager.allocate(PortManager.PortRange.GENERAL, "localhttp:old", preferred)
         val stopped = AtomicBoolean(false)
         PortManager.registerStopHandler(preferred) {
             stopped.set(true)
         }
 
         val allocated = PortManager.allocate(
-            PortManager.PortRange.PHP,
-            "php:new",
+            PortManager.PortRange.GENERAL,
+            "localhttp:new",
             preferredPort = preferred,
             conflictPolicy = PortManager.ConflictPolicy.AUTO_KILL
         )
 
         assertThat(allocated).isEqualTo(preferred)
         assertThat(stopped.get()).isTrue()
-        assertThat(PortManager.getAllocation(preferred)?.owner).isEqualTo("php:new")
+        assertThat(PortManager.getAllocation(preferred)?.owner).isEqualTo("localhttp:new")
     }
 
     @Test
     fun `release invokes stop handler and terminates process`() {
-        val port = PortManager.allocate(PortManager.PortRange.NODEJS, "nodejs:test")
+        val port = PortManager.allocate(PortManager.PortRange.LOCAL_HTTP, "localhttp:test")
         val process = ProcessBuilder("sh", "-c", "sleep 30").start()
         PortManager.registerProcess(port, process)
         val handlerCalled = AtomicBoolean(false)
@@ -107,13 +107,13 @@ class PortManagerTest {
 
     @Test
     fun `track external keeps allocation while port is bound`() {
-        val preferred = PortManager.PortRange.NODEJS.start + 11
+        val preferred = PortManager.PortRange.LOCAL_HTTP.start + 11
         val blocker = ServerSocket(preferred)
         try {
             val tracked = PortManager.trackExternal(
                 preferred,
-                "nodejs:ext",
-                PortManager.PortRange.NODEJS
+                "localhttp:ext",
+                PortManager.PortRange.LOCAL_HTTP
             )
             assertThat(tracked).isTrue()
             assertThat(PortManager.isAllocated(preferred)).isTrue()
@@ -126,7 +126,7 @@ class PortManagerTest {
 
     @Test
     fun `release removes allocation`() {
-        val port = PortManager.allocate(PortManager.PortRange.NODEJS, "nodejs:test")
+        val port = PortManager.allocate(PortManager.PortRange.LOCAL_HTTP, "localhttp:test")
         assertThat(PortManager.isAllocated(port)).isTrue()
 
         PortManager.release(port)
@@ -135,23 +135,17 @@ class PortManagerTest {
     }
 
     @Test
-    fun `convenience allocators register expected owner prefix`() {
-        val nodePort = PortManager.allocateForNodeJs("projectA")
-        val phpPort = PortManager.allocateForPhp("projectB")
-        val pyPort = PortManager.allocateForPython("projectC")
-        val goPort = PortManager.allocateForGo("projectD")
+    fun `convenience allocator registers expected owner prefix`() {
+        val port = PortManager.allocateForLocalHttp("projectA")
 
-        assertThat(PortManager.getAllocation(nodePort)?.owner).isEqualTo("nodejs:projectA")
-        assertThat(PortManager.getAllocation(phpPort)?.owner).isEqualTo("php:projectB")
-        assertThat(PortManager.getAllocation(pyPort)?.owner).isEqualTo("python:projectC")
-        assertThat(PortManager.getAllocation(goPort)?.owner).isEqualTo("go:projectD")
+        assertThat(PortManager.getAllocation(port)?.owner).isEqualTo("localhttp:projectA")
     }
 
     @Test
     fun `releaseAll clears all tracked allocations`() {
-        PortManager.allocateForNodeJs("a")
-        PortManager.allocateForPhp("b")
-        PortManager.allocateForPython("c")
+        PortManager.allocateForLocalHttp("a")
+        PortManager.allocateForLocalHttp("b")
+        PortManager.allocateForLocalHttp("c")
 
         assertThat(PortManager.getAllAllocations()).isNotEmpty()
         PortManager.releaseAll()

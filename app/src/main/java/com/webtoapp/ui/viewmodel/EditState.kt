@@ -134,6 +134,5 @@ fun WebViewConfig.withBrowserToolbarEnabled(enabled: Boolean): WebViewConfig = c
 fun EditState.hasPreviewableContent(): Boolean = when (appType) {
     AppType.WEB -> url.isNotBlank()
     AppType.HTML, AppType.FRONTEND -> htmlConfig?.files?.isNotEmpty() == true
-    AppType.IMAGE, AppType.VIDEO -> url.isNotBlank()
     else -> true
 }

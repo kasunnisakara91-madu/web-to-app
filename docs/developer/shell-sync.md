@@ -34,12 +34,12 @@ At runtime, a generated APK:
 1. `WebToAppApplication` starts.
 2. `ShellModeManager.isShellMode()` checks for `app_config.json` in assets.
 3. If present, `getConfig()` deserializes it (via Gson) into `ShellConfig` — possibly decrypting it first.
-4. `ShellServerLauncher` resolves and launches server-backed runtimes; `ShellRuntimeServices` initializes the runtime stack.
+4. `ShellContentRouter` picks the content surface for the configured app type (WebView content or the gallery player); `ShellRuntimeServices` initializes the runtime services (activation, announcements, ad-block).
 
 ## Constraints
 
 - **One shell template.** Do not introduce a second template APK.
-- **Low `targetSdk` (28).** Required for fork+exec runtimes. Do not raise it casually.
+- **Low `targetSdk` (28).** A legacy constraint kept for compatibility. Do not raise it casually.
 - **Thin dependency set.** Do not pull host-only deps into `shell/build.gradle.kts`.
 - **Fail-soft notifications.** FGS / notification channel creation must use `SafeNotificationChannels`; channel creation failures must not crash FGS startup.
 - **Configuration-cache safety.** Custom Gradle tasks (`syncCloneHostDex`, etc.) must capture `File`/`Provider` values at configuration time — do not reference `Project`/`android.sdkDirectory` inside task closures.

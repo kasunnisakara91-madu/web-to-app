@@ -18,17 +18,17 @@ Android 6.0(API 23)或更高。
 
 ### 这和网址套壳应用有什么不同?
 
-网址套壳只是在 WebView 里打开网站。WebToApp 额外在**设备上运行真实的服务运行时**(Node.js、PHP、Python、Go、WordPress,经 fork+exec)、搭载加固网络栈(DoH、TLS 指纹、ECH)、在二进制层面修改并签名 APK,并支持模块/油猴脚本/MV3 扩展 —— 全程无需电脑或远程构建服务器。
+网址套壳只是在 WebView 里打开网站。WebToApp 还能把整个站点和网页项目打包成独立应用、搭载加固网络栈(DoH、TLS 指纹、ECH)、在二进制层面修改并签名 APK,并支持模块/油猴脚本/MV3 扩展 —— 全程无需电脑或远程构建服务器。
 
 ### 能创建哪些应用类型?
 
-12 种:网页、多站点、HTML、离线包、前端、PHP、WordPress、Node.js、Python、Go、媒体和画廊。见[创建应用](/zh/guide/app-types/)。
+6 种:网页、多站点、HTML、离线包、前端和画廊。见[创建应用](/zh/guide/app-types/)。
 
 ## 创建与编辑
 
 ### 编辑核心配置和编辑通用配置有什么区别?
 
-- **编辑核心配置** —— 类型专属的来源/运行时设置(每种应用类型都不同)。见[编辑核心配置](/zh/guide/app-actions/edit-core-config)。
+- **编辑核心配置** —— 类型专属的来源设置(每种应用类型都不同)。见[编辑核心配置](/zh/guide/app-actions/edit-core-config)。
 - **编辑通用配置** —— 每个应用都有的共享选项(外观、网络、隐私、扩展、导出)。见[编辑通用配置](/zh/guide/app-actions/edit-common-config/)。
 
 网页应用没有这两项,而是单一的合并 **编辑** 入口。
@@ -55,11 +55,11 @@ Android 6.0(API 23)或更高。
 
 ### 我的应用能上架 Google Play 吗?
 
-通常可以。Web、多网站、HTML、离线包、Frontend、媒体和图库应用都能导出 Play 级 AAB。两类不行:**Node.js / PHP / Python / Go / WordPress** 应用,以及任何开启**资源加密**的构建。见 [Google Play](/zh/guide/more-features/google-play)。
+通常可以。所有应用类型 —— 网页、多站点、HTML、离线包、前端和画廊 —— 都能导出 Play 级 AAB。例外:开启**绑定签名的资源加密**的构建,以及从旧备份恢复的已移除类型应用。见 [Google Play](/zh/guide/more-features/google-play)。
 
 ### 为什么生成的应用 targetSdk 是 28?
 
-较低的 `targetSdk` 是刻意为之:它让生成的应用能从应用存储 fork+exec 原生运行时(Node.js、PHP、Python、Go、WordPress)。这只是 APK 打包层面的细节 —— AAB 导出器会把 `targetSdk` 重写到 Play 要求的级别,这个低值不会带到 Play。
+生成的 APK 保留 `targetSdk` 28 是历史遗留的打包约束,出于兼容性保留。这只是 APK 打包层面的细节 —— AAB 导出器会把 `targetSdk` 重写到 Play 要求的级别,这个低值不会带到 Play。
 
 ### 如何用自己的密钥签名?
 
@@ -69,23 +69,11 @@ Android 6.0(API 23)或更高。
 
 在[文件管理](/zh/guide/more-features/file-manager)中 —— APK 构建、AAB 导出、应用克隆和构建日志。
 
-## 运行时
-
-### 为什么我的 Node/PHP/Python/Go 应用首次使用要下载东西?
-
-为了让基础应用保持小巧,运行时二进制不打包进去;它们在首次使用时下载一次并缓存。在[运行时管理](/zh/guide/more-features/runtime-management)和 [Linux 环境](/zh/guide/more-features/linux-environment)中管理。
-
-### 我的 Node.js 应用报 `loadNode` / `loadJniBridge` 错误,为什么?
-
-导出的 APK 必须嵌入 `libnode_bridge.so`、`libnode.so`(16KB 对齐)和 `libc++_shared.so`。缺少原生库会导致此失败。见 [Node.js](/zh/guide/app-types/nodejs) 的导出要求。
+## 本地站点与端口
 
 ### 端口如何管理?冲突了怎么办?
 
-运行时应用通过[端口管理](/zh/guide/more-features/port-manager)以冲突策略分配端口:`REASSIGN`(选另一个端口)、`AUTO_KILL`(停止冲突服务)或 `ALERT`(通知)。
-
-### 为什么我的运行时应用需要 DNS 桥?
-
-打包的原生二进制(基于 musl)不一定能触达系统 DNS 解析器,因此一个本地 DNS 桥代理提供 DNS 解析和出站 HTTP。这是自动接好的。
+提供本地站点的应用(多站点内嵌应用、打包的 HTML/前端应用)通过[端口管理](/zh/guide/more-features/port-manager)以冲突策略分配端口:`REASSIGN`(选另一个端口)、`AUTO_KILL`(停止冲突服务)或 `ALERT`(通知)。
 
 ## 功能与配置
 
@@ -133,7 +121,7 @@ Android 6.0(API 23)或更高。
 
 ### 我导出的应用连不上网,该检查什么?
 
-检查应用的[自定义DNS](/zh/guide/app-actions/edit-common-config/custom-dns)和[高级设置](/zh/guide/app-actions/edit-common-config/advanced-settings)中的代理设置。对于运行时应用,本地 DNS 桥会自动处理解析。
+检查应用的[自定义DNS](/zh/guide/app-actions/edit-common-config/custom-dns)和[高级设置](/zh/guide/app-actions/edit-common-config/advanced-settings)中的代理设置。
 
 ## 数据与帮助
 

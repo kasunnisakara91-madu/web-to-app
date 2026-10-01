@@ -32,9 +32,6 @@ fun MoreScreen(
     onOpenHostsAdBlock: () -> Unit = {},
     onOpenAppModifier: () -> Unit = {},
     onOpenPlugins: () -> Unit = {},
-    onOpenLinuxEnvironment: () -> Unit = {},
-    onOpenRuntimeDeps: () -> Unit = {},
-    onOpenPortManager: () -> Unit = {},
     onOpenStats: () -> Unit = {},
     onOpenAbout: () -> Unit = {},
     onOpenSettings: () -> Unit = {},
@@ -100,24 +97,6 @@ fun MoreScreen(
                             title = Strings.menuAppModifier,
                             icon = painterResource(R.drawable.ic_sidebar_app_modifier),
                             onClick = onOpenAppModifier
-                        )
-                        WtaSectionDivider()
-                        MoreMenuItem(
-                            title = Strings.menuLinuxEnvironment,
-                            icon = painterResource(R.drawable.ic_sidebar_linux),
-                            onClick = onOpenLinuxEnvironment
-                        )
-                        WtaSectionDivider()
-                        MoreMenuItem(
-                            title = Strings.menuRuntimeDeps,
-                            icon = painterResource(R.drawable.ic_sidebar_runtime),
-                            onClick = onOpenRuntimeDeps
-                        )
-                        WtaSectionDivider()
-                        MoreMenuItem(
-                            title = Strings.menuPortManager,
-                            icon = painterResource(R.drawable.ic_sidebar_port),
-                            onClick = onOpenPortManager
                         )
                     }
                 }

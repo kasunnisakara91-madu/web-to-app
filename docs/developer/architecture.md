@@ -15,7 +15,7 @@ app/ sources
 
 Generated APK runtime
   WebToAppApplication → ShellModeManager → load assets JSON config
-  → WebViewManager / runtime servers (Node/PHP/Python/Go/WordPress)
+  → WebViewManager / content router
 ```
 
 | | Host `:app` (preview) | Generated APK (export) |
@@ -37,7 +37,7 @@ Miss any step and you get one of three symptoms: the editor shows a switch that 
 
 ## One shell template
 
-There is exactly **one** shell template: `webview_shell.apk` from `:shell` release. Do not introduce a second template APK. Generated apps keep a low `targetSdk` (28) on the shell path because they rely on on-device fork+exec runtimes — do not raise shell `targetSdk` casually.
+There is exactly **one** shell template: `webview_shell.apk` from `:shell` release. Do not introduce a second template APK. Generated apps keep a low `targetSdk` (28) on the shell path — a legacy constraint kept for compatibility — do not raise shell `targetSdk` casually.
 
 ## Configuration center
 

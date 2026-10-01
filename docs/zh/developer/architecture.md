@@ -15,7 +15,7 @@ app/ 源码
 
 生成 APK 运行时
   WebToAppApplication → ShellModeManager → 加载 assets JSON 配置
-  → WebViewManager / 运行时服务器(Node/PHP/Python/Go/WordPress)
+  → WebViewManager / 内容路由器
 ```
 
 | | 宿主 `:app`(预览) | 生成 APK(导出) |
@@ -37,7 +37,7 @@ app/ 源码
 
 ## 唯一的 shell 模板
 
-只有**一个** shell 模板:来自 `:shell` release 的 `webview_shell.apk`。不要引入第二个模板 APK。生成的应用在 shell 路径上保持较低的 `targetSdk`(28),因为它们依赖设备端 fork+exec 运行时 —— 不要随意抬高 shell 的 `targetSdk`。
+只有**一个** shell 模板:来自 `:shell` release 的 `webview_shell.apk`。不要引入第二个模板 APK。生成的应用在 shell 路径上保持较低的 `targetSdk`(28)—— 这是出于兼容性保留的历史约束 —— 不要随意抬高 shell 的 `targetSdk`。
 
 ## 配置中心
 

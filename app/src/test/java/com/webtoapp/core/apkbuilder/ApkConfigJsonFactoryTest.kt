@@ -248,21 +248,21 @@ class ApkConfigJsonFactoryTest {
     }
 
     @Test
-    fun `create allows server backed app type without target url`() {
+    fun `create allows content app type without target url`() {
         val root = JsonParser.parseString(
             ApkConfigJsonFactory.create(
                 ApkConfig(
                     meta = MetaBlock(
-                        appName = "Node App",
-                        packageName = "com.example.nodeapp",
+                        appName = "Gallery App",
+                        packageName = "com.example.galleryapp",
                         targetUrl = "",
-                        appType = "NODEJS_APP"
+                        appType = "GALLERY"
                     )
                 )
             )
         ).asJsonObject
 
-        assertThat(root.get("appType").asString).isEqualTo("NODEJS_APP")
+        assertThat(root.get("appType").asString).isEqualTo("GALLERY")
         assertThat(root.get("targetUrl").asString).isEmpty()
     }
 

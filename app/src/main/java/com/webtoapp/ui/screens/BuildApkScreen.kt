@@ -302,31 +302,17 @@ private fun BuildApkContent(
         progress = 0
         progressText = Strings.preparing
         scope.launch {
-            progressText = when (webAppWithConfig.appType) {
-                AppType.PYTHON_APP -> Strings.preparingPythonEnv
-                AppType.NODEJS_APP -> Strings.preparingNodeEnv
-                AppType.PHP_APP,
-                AppType.WORDPRESS -> Strings.preparing
-                else -> Strings.preparing
-            }
+            progressText = Strings.preparing
             val ensureOk = ExportRuntimeEnsure.ensure(
                 context,
-                webAppWithConfig.appType,
                 webAppWithConfig.webViewConfig.forceHttp3 ||
-                    webAppWithConfig.webViewConfig.dnsConfig.echEffective,
-                neededAbis = webAppWithConfig.apkExportConfig?.architecture?.abiFilters
+                    webAppWithConfig.webViewConfig.dnsConfig.echEffective
             )
             if (!ensureOk) {
                 // Abort here: buildApk runs the same ensure again, so falling
                 // through would burn a second full runtime download attempt
                 // before the build fails on the same missing dependency.
-                progressText = when (webAppWithConfig.appType) {
-                    AppType.PYTHON_APP -> Strings.pythonRuntimeDownloadFailed
-                    AppType.NODEJS_APP -> Strings.njsDownloadFailed
-                    AppType.PHP_APP,
-                    AppType.WORDPRESS -> Strings.wpDownloadFailed
-                    else -> Strings.preparing
-                }
+                progressText = Strings.downloadFailed
                 isBuilding = false
                 return@launch
             }
@@ -388,35 +374,12 @@ private fun BuildApkContent(
         if (!uiReady) return@LaunchedEffect
         val config = currentBuildConfig()
         val needsCronet = config.webViewConfig.forceHttp3 || config.webViewConfig.dnsConfig.echEffective
-        if (ExportRuntimeEnsure.needsEnsure(
-                context,
-                config.appType,
-                needsCronet,
-                neededAbis = webApp.apkExportConfig?.architecture?.abiFilters
-            )
-        ) {
+        if (ExportRuntimeEnsure.needsEnsure(context, needsCronet)) {
             isEnsuringRuntime = true
-            ensureRuntimeText = when (config.appType) {
-                AppType.PYTHON_APP -> Strings.preparingPythonEnv
-                AppType.NODEJS_APP -> Strings.preparingNodeEnv
-                AppType.PHP_APP,
-                AppType.WORDPRESS -> Strings.preparing
-                else -> Strings.preparing
-            }
-            val ensureOk = ExportRuntimeEnsure.ensure(
-                context,
-                config.appType,
-                needsCronet,
-                neededAbis = webApp.apkExportConfig?.architecture?.abiFilters
-            )
+            ensureRuntimeText = Strings.preparing
+            val ensureOk = ExportRuntimeEnsure.ensure(context, needsCronet)
             if (!ensureOk) {
-                ensureRuntimeText = when (config.appType) {
-                    AppType.PYTHON_APP -> Strings.pythonRuntimeDownloadFailed
-                    AppType.NODEJS_APP -> Strings.njsDownloadFailed
-                    AppType.PHP_APP,
-                    AppType.WORDPRESS -> Strings.wpDownloadFailed
-                    else -> Strings.preparing
-                }
+                ensureRuntimeText = Strings.downloadFailed
             } else {
                 ensureRuntimeText = null
             }
@@ -569,12 +532,6 @@ private fun BuildApkContent(
                         )
                         Text(
                             when (webApp.appType) {
-                                AppType.IMAGE -> {
-                                    webApp.mediaConfig?.mediaPath ?: webApp.url
-                                }
-                                AppType.VIDEO -> {
-                                    webApp.mediaConfig?.mediaPath ?: webApp.url
-                                }
                                 AppType.HTML -> {
                                     webApp.htmlConfig?.entryFile?.takeIf { it.isNotBlank() } ?: "index.html"
                                 }
