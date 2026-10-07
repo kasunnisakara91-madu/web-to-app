@@ -113,6 +113,37 @@ private fun isOwnInjectionMarker(message: String): Boolean =
     message.startsWith("[UserScript:") || message.startsWith("[WebToApp") ||
         message.startsWith("[WTA]") || message.startsWith("[wta-")
 
+/** Longest side handed to the recents card. Larger bitmaps are scaled first. */
+private const val RECENTS_ICON_MAX_PX = 144
+
+/**
+ * Label and optional icon for a separate-task recents card. A null icon still
+ * sets the label. The bitmap given to the system is left unrecycled; a larger
+ * source is recycled only after a distinct scaled copy is made.
+ */
+internal fun recentsTaskDescription(label: String, icon: Bitmap?): ActivityManager.TaskDescription {
+    val scaled = icon?.let { scaleRecentsIcon(it) }
+    // Builder.setIcon takes a resource id. The public way to attach a user
+    // bitmap is this constructor; the Icon overload is not in the SDK.
+    @Suppress("DEPRECATION")
+    return if (scaled != null) {
+        ActivityManager.TaskDescription(label, scaled)
+    } else {
+        ActivityManager.TaskDescription(label)
+    }
+}
+
+private fun scaleRecentsIcon(source: Bitmap): Bitmap {
+    val longest = maxOf(source.width, source.height)
+    if (longest <= RECENTS_ICON_MAX_PX || longest <= 0) return source
+    val scale = RECENTS_ICON_MAX_PX.toFloat() / longest
+    val width = (source.width * scale).toInt().coerceAtLeast(1)
+    val height = (source.height * scale).toInt().coerceAtLeast(1)
+    val scaled = Bitmap.createScaledBitmap(source, width, height, true)
+    if (scaled !== source) source.recycle()
+    return scaled
+}
+
 /** Bounded console buffer: page console spam must not grow state without limit. */
 private const val CONSOLE_LOG_CAP = 500
 
@@ -930,7 +961,7 @@ open class WebViewActivity : AppCompatActivity() {
             val label = previewApp?.name?.takeIf { it.isNotBlank() }
                 ?: directUrl?.let { runCatching { Uri.parse(it).host }.getOrNull()?.takeIf { it.isNotBlank() } }
                 ?: if (appId > 0) "WebApp #$appId" else null
-            if (label != null) applySeparateTaskDescription(label)
+            if (label != null) applySeparateTaskDescription(label, previewApp?.iconPath)
         }
         sessionKey = resumeStore.sessionKey(
             appId = appId,
@@ -1007,7 +1038,7 @@ open class WebViewActivity : AppCompatActivity() {
                 },
                 onSavedAppLoaded = { app ->
                     resolvedSavedApp = app
-                    if (app.name.isNotBlank()) applySeparateTaskDescription(app.name)
+                    if (app.name.isNotBlank()) applySeparateTaskDescription(app.name, app.iconPath)
                     // App-id launches resolve these from the saved config; the onCreate pass
                     // only covers intent-carried preview apps.
                     if (previewApp == null) {
@@ -1233,18 +1264,38 @@ open class WebViewActivity : AppCompatActivity() {
         }
     }
 
-    private fun applySeparateTaskDescription(label: String) {
+    private fun applySeparateTaskDescription(label: String, iconPath: String? = null) {
         if (this !is WebViewDocumentActivity) return
         try {
-            val description = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                ActivityManager.TaskDescription.Builder().setLabel(label).build()
-            } else {
-                @Suppress("DEPRECATION")
-                ActivityManager.TaskDescription(label)
-            }
-            setTaskDescription(description)
+            setTaskDescription(recentsTaskDescription(label, decodeRecentsIcon(iconPath)))
         } catch (e: Exception) {
             AppLogger.w("WebViewActivity", "setTaskDescription failed: ${e.message}")
+        }
+    }
+
+    private fun decodeRecentsIcon(iconPath: String?): Bitmap? {
+        val path = iconPath?.takeIf { it.isNotBlank() } ?: return null
+        return try {
+            when {
+                path.startsWith("/") -> {
+                    val file = File(path)
+                    if (!file.exists()) null
+                    else com.webtoapp.util.BoundedBitmaps.decodeBoundedBitmapFile(file.absolutePath, RECENTS_ICON_MAX_PX)
+                }
+                path.startsWith("file://") -> {
+                    val file = File(Uri.parse(path).path ?: return null)
+                    if (!file.exists()) null
+                    else com.webtoapp.util.BoundedBitmaps.decodeBoundedBitmapFile(file.absolutePath, RECENTS_ICON_MAX_PX)
+                }
+                else -> {
+                    contentResolver.openInputStream(Uri.parse(path))?.use { stream ->
+                        com.webtoapp.util.BoundedBitmaps.decodeBoundedBitmapStream(stream, RECENTS_ICON_MAX_PX)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            AppLogger.w("WebViewActivity", "recents icon decode failed: ${e.message}")
+            null
         }
     }
 
