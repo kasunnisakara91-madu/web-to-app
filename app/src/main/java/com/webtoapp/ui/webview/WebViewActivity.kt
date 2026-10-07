@@ -170,6 +170,10 @@ open class WebViewActivity : AppCompatActivity() {
          * Switch on: [WebViewDocumentActivity] with NEW_DOCUMENT, one recents
          * entry per [documentUri]. The data URI is the document identity and is
          * cleared when the switch is off so singleTask reuse is not split.
+         *
+         * [Intent.FLAG_ACTIVITY_MULTIPLE_TASK] is intentionally absent. Paired
+         * with NEW_DOCUMENT it ignores intoExisting and creates a new recents
+         * task on every launch of the same WebApp.
          */
         fun buildLaunchIntent(
             context: Context,
@@ -191,7 +195,6 @@ open class WebViewActivity : AppCompatActivity() {
                     }
                     addFlags(
                         Intent.FLAG_ACTIVITY_NEW_DOCUMENT or
-                            Intent.FLAG_ACTIVITY_MULTIPLE_TASK or
                             Intent.FLAG_ACTIVITY_NEW_TASK
                     )
                 } else {
@@ -874,7 +877,26 @@ open class WebViewActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * When this launch is a second task for a document that is already open,
+     * the subclass returns an intent that brings that task forward. This
+     * method starts it only after [super.onCreate], then removes the duplicate
+     * before the preview WebView is created.
+     */
+    protected open fun duplicateDocumentBringIntent(): Intent? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val bringExisting = duplicateDocumentBringIntent()
+        if (bringExisting != null) {
+            super.onCreate(savedInstanceState)
+            try {
+                startActivity(bringExisting)
+            } catch (e: Exception) {
+                AppLogger.w("WebViewActivity", "bring existing document forward failed: ${e.message}")
+            }
+            finishAndRemoveTask()
+            return
+        }
 
         try {
             enableEdgeToEdge()
