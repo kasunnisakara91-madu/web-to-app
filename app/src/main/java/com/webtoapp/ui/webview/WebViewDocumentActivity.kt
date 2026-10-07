@@ -6,9 +6,10 @@ import java.util.WeakHashMap
 
 /**
  * One recents task per document URI. Home preview and shortcuts use it when
- * the About-screen separate-tasks switch is on. The preview tool always uses
- * it, so an external agent has a page the user can watch. [WebViewActivity]
- * stays singleTask so the default path still reuses one preview.
+ * the About-screen separate-tasks switch is on. Opening the same URI brings
+ * that task forward instead of stacking another card (#1250). The preview
+ * tool always uses it, so an external agent has a page the user can watch.
+ * [WebViewActivity] stays singleTask so the default path still reuses one preview.
  */
 class WebViewDocumentActivity : WebViewActivity() {
 

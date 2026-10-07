@@ -168,8 +168,10 @@ open class WebViewActivity : AppCompatActivity() {
         /**
          * Switch off: one singleTask [WebViewActivity], reused via CLEAR_TOP.
          * Switch on: [WebViewDocumentActivity] with NEW_DOCUMENT, one recents
-         * entry per [documentUri]. The data URI is the document identity and is
-         * cleared when the switch is off so singleTask reuse is not split.
+         * entry per [documentUri]. Do not add [Intent.FLAG_ACTIVITY_MULTIPLE_TASK]:
+         * paired with NEW_DOCUMENT it opens a new card on every launch (#1250).
+         * The data URI is the document identity and is cleared when the switch
+         * is off so singleTask reuse is not split.
          */
         fun buildLaunchIntent(
             context: Context,
@@ -191,7 +193,6 @@ open class WebViewActivity : AppCompatActivity() {
                     }
                     addFlags(
                         Intent.FLAG_ACTIVITY_NEW_DOCUMENT or
-                            Intent.FLAG_ACTIVITY_MULTIPLE_TASK or
                             Intent.FLAG_ACTIVITY_NEW_TASK
                     )
                 } else {
