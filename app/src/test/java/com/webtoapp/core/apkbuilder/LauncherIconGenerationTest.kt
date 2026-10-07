@@ -204,6 +204,12 @@ class LauncherIconGenerationTest {
         assertThat(specs.filter { it.kind == ArscRebuilder.LauncherIconKind.ROUND }).isNotEmpty()
 
         ZipFile(outputApk).use { zip ->
+            val outArsc = zip.getInputStream(zip.getEntry("resources.arsc")).readBytes()
+            val bgColor = ArscRebuilder().findLauncherBackgroundEntry(outArsc)
+            assertThat(bgColor).isNotNull()
+            assertThat(bgColor!![1]).isEqualTo(0x1c)
+            assertThat(bgColor[2]).isEqualTo(0xFFFFFFFF.toInt())
+
             // The background layer must be a uniform opaque color, not the user image.
             val bgEntry = zip.getEntry(ArscRebuilder.LAUNCHER_BACKGROUND_DRAWABLE_PATH)
             assertThat(bgEntry).isNotNull()

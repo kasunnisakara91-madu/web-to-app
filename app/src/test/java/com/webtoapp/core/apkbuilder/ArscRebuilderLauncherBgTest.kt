@@ -8,9 +8,10 @@ import org.junit.Test
 
 /**
  * Pins the launcher-background rewrite done by [ArscRebuilder]: the template ships
- * `color/ic_launcher_background` as a black color int, and a rebuild with icon
- * replacement converts it into a drawable string reference so the generated app's
- * adaptive icons get the patched `res/ic_launcher_bg.png`.
+ * `color/ic_launcher_background` as a black color int. Adaptive icon XML references
+ * that color, so a rebuild that has a derived background color must store an opaque
+ * ARGB color int. A string path does not inflate as a color, and the installed
+ * adaptive icon would stay black. With no derived color, the template black stays.
  *
  * Localization goes through [ArscRebuilder.findLauncherBackgroundEntry] — the same
  * by-name lookup the runtime uses. An earlier revision scanned for the entry at a
@@ -50,39 +51,38 @@ class ArscRebuilderLauncherBgTest {
     }
 
     @Test
-    fun `rebuild converts launcher background entry to drawable string reference`() {
+    fun `rebuild paints launcher background as an opaque argb color`() {
         val original = readTemplateArsc()
-        val rebuilder = ArscRebuilder()
-        val rebuilt = rebuilder.rebuildWithNewAppNameAndIcons(original, "TestApp", replaceIcons = true)
+        val color = 0x00ABCDEF
+        val rebuilt = ArscRebuilder().rebuildWithNewAppNameAndIcons(
+            original,
+            "TestApp",
+            replaceIcons = true,
+            launcherBackgroundColor = color
+        )
 
         assertThat(rebuilt.size).isGreaterThan(0)
 
         val entry = ArscRebuilder().findLauncherBackgroundEntry(rebuilt)
         assertThat(entry).isNotNull()
-
-        entry!!.let {
-            assertThat(it[1]).isEqualTo(0x03)
-            assertThat(it[2]).isAtLeast(0)
-        }
+        assertThat(entry!![1]).isEqualTo(0x1c)
+        assertThat(entry[2]).isEqualTo(color or 0xFF000000.toInt())
     }
 
     @Test
-    fun `rebuild leaves the launcher background drawable string index in valid range`() {
+    fun `rebuild without a background color keeps the template black`() {
         val original = readTemplateArsc()
-        val rebuilder = ArscRebuilder()
-        val rebuilt = rebuilder.rebuildWithNewAppNameAndIcons(original, "TestApp", replaceIcons = true)
+        val rebuilt = ArscRebuilder().rebuildWithNewAppNameAndIcons(
+            original,
+            "TestApp",
+            replaceIcons = true
+        )
 
-        val entry = ArscRebuilder().findLauncherBackgroundEntry(rebuilt)!!
-        // The global string pool sits right after the 12-byte table header
-        // (ResTable_header): its count is at offset 8 + 8.
-        val scount = readI32(rebuilt, 8 + 8)
-
-        assertThat(entry[2]).isIn(0 until scount)
+        val entry = ArscRebuilder().findLauncherBackgroundEntry(rebuilt)
+        assertThat(entry).isNotNull()
+        assertThat(entry!![1]).isEqualTo(0x1d)
+        assertThat(entry[2]).isEqualTo(0xff000000.toInt())
     }
-
-    private fun readI32(d: ByteArray, o: Int) =
-        (d[o].toInt() and 0xFF) or ((d[o + 1].toInt() and 0xFF) shl 8) or
-            ((d[o + 2].toInt() and 0xFF) shl 16) or ((d[o + 3].toInt() and 0xFF) shl 24)
 
     private fun resolveFile(vararg candidates: String): File {
         for (c in candidates) {

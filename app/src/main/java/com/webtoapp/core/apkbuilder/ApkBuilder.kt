@@ -1642,7 +1642,10 @@ class ApkBuilder(private val context: Context) {
                             var modifiedData = arscRebuilder.rebuildWithNewAppNameAndIcons(
                                 originalData,
                                 config.appName,
-                                replaceIcons = true
+                                replaceIcons = true,
+                                launcherBackgroundColor = iconBitmap?.let {
+                                    ApkTemplate.deriveLauncherBackgroundColor(it)
+                                }
                             )
 
                             discoveredOldIconPaths = arscRebuilder.getLastDiscoveredIconPaths()

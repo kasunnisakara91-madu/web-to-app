@@ -29,9 +29,14 @@ class ArscRebuilder {
     fun rebuildWithNewAppNameAndIcons(
         arscData: ByteArray,
         targetAppName: String,
-        replaceIcons: Boolean = false
+        replaceIcons: Boolean = false,
+        launcherBackgroundColor: Int? = null
     ): ByteArray {
-        AppLogger.d(TAG, "rebuildWithNewAppName: target='$targetAppName', replaceIcons=$replaceIcons")
+        AppLogger.d(
+            TAG,
+            "rebuildWithNewAppName: target='$targetAppName', replaceIcons=$replaceIcons, " +
+                "launcherBackground=${launcherBackgroundColor?.let { Integer.toHexString(it) }}"
+        )
 
         try {
             val buffer = ByteBuffer.wrap(arscData).order(ByteOrder.LITTLE_ENDIAN)
@@ -92,7 +97,13 @@ class ArscRebuilder {
                 _lastDiscoveredIconPaths = iconPaths.map { it.path }.toSet()
                 AppLogger.d(TAG, "Discovered old icon paths (for ZIP replacement): $_lastDiscoveredIconPaths")
 
-                convertLauncherBackgroundToDrawable(remainingData, strings)
+                // Adaptive XML points at @color/ic_launcher_background. A string
+                // path does not inflate as a color, so the installed icon keeps
+                // the template black while the replaced mipmaps look right.
+                // Paint the derived color only when an icon was actually loaded.
+                if (launcherBackgroundColor != null) {
+                    paintLauncherBackgroundColor(remainingData, launcherBackgroundColor)
+                }
             }
 
             var modified = false
@@ -267,34 +278,32 @@ class ArscRebuilder {
         return null
     }
 
-    private fun convertLauncherBackgroundToDrawable(
-        packageData: ByteArray,
-        globalStrings: MutableList<String>
-    ) {
+    /**
+     * Writes an opaque ARGB color into the existing `color/ic_launcher_background`
+     * entry. Typed value 0x1c is TYPE_INT_COLOR_ARGB8. The value sits inside the
+     * package chunk, which is appended unchanged after the string pool is rebuilt.
+     */
+    private fun paintLauncherBackgroundColor(packageData: ByteArray, color: Int) {
         try {
-            val bgStringIdx = globalStrings.indexOfFirst { it == LAUNCHER_BACKGROUND_DRAWABLE_PATH }
-            val newStringIndex = if (bgStringIdx >= 0) {
-                bgStringIdx
-            } else {
-                globalStrings.add(LAUNCHER_BACKGROUND_DRAWABLE_PATH)
-                globalStrings.size - 1
-            }
-
             val entry = findLauncherBackgroundEntry(packageData) ?: run {
-                AppLogger.w(TAG, "convertLauncherBackground: entry not patched")
+                AppLogger.w(TAG, "paintLauncherBackground: entry not patched")
                 return
             }
             val valuePos = entry[0]
+            val opaque = color or 0xFF000000.toInt()
 
             packageData[valuePos + 2] = 0
-            packageData[valuePos + 3] = 0x03
-            packageData[valuePos + 4] = (newStringIndex and 0xFF).toByte()
-            packageData[valuePos + 5] = ((newStringIndex shr 8) and 0xFF).toByte()
-            packageData[valuePos + 6] = ((newStringIndex shr 16) and 0xFF).toByte()
-            packageData[valuePos + 7] = ((newStringIndex shr 24) and 0xFF).toByte()
-            AppLogger.d(TAG, "convertLauncherBackground: patched color/ic_launcher_background -> drawable '$LAUNCHER_BACKGROUND_DRAWABLE_PATH' (strIdx=$newStringIndex) at valuePos=$valuePos")
+            packageData[valuePos + 3] = 0x1c
+            packageData[valuePos + 4] = (opaque and 0xFF).toByte()
+            packageData[valuePos + 5] = ((opaque shr 8) and 0xFF).toByte()
+            packageData[valuePos + 6] = ((opaque shr 16) and 0xFF).toByte()
+            packageData[valuePos + 7] = ((opaque shr 24) and 0xFF).toByte()
+            AppLogger.d(
+                TAG,
+                "paintLauncherBackground: color/ic_launcher_background -> #${Integer.toHexString(opaque)} at valuePos=$valuePos"
+            )
         } catch (e: Exception) {
-            AppLogger.e(TAG, "convertLauncherBackground failed", e)
+            AppLogger.e(TAG, "paintLauncherBackground failed", e)
         }
     }
 
