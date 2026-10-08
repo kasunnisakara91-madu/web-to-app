@@ -90,26 +90,6 @@ fun ApkExportSection(
 
     Column(verticalArrangement = Arrangement.spacedBy(WtaSpacing.SectionGap)) {
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = WtaSpacing.RowHorizontal),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Icon(
-                Icons.Outlined.Info,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(16.dp)
-            )
-            Text(
-                text = Strings.apkConfigNote,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-
         WtaSection(
             title = Strings.apkIdentityBuildSection,
             headerStyle = WtaSectionHeaderStyle.Quiet,
@@ -299,14 +279,6 @@ fun ApkExportSection(
                         )
                     }
                 }
-                WtaSectionDivider()
-                WtaToggleRow(
-                    title = Strings.apkLoggingTitle,
-                    subtitle = Strings.apkLoggingHint.ifDescriptionsShown(),
-                    icon = Icons.Outlined.Description,
-                    checked = config.loggingEnabled,
-                    onCheckedChange = { onConfigChange(config.copy(loggingEnabled = it)) }
-                )
                 if (canOverrideTargetSdk) {
                     WtaSectionDivider()
                     TargetSdkOverrideRows(
@@ -317,23 +289,32 @@ fun ApkExportSection(
             }
         }
 
-        WtaSettingCard {
-            WtaToggleRow(
-                title = Strings.saepPolicyTitle,
-                checked = config.saepEnabled,
-                onCheckedChange = { onConfigChange(config.copy(saepEnabled = it)) }
-            )
-            if (LocalShowDescriptions.current) {
-                Text(
-                    text = Strings.saepPolicyHint,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(
-                        horizontal = WtaSpacing.RowHorizontal,
-                        vertical = WtaSpacing.ContentGap
-                    )
+        WtaSection(
+            title = Strings.apkBuildOptionsSection,
+            headerStyle = WtaSectionHeaderStyle.Quiet,
+            collapsible = true,
+            initiallyExpanded = false
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                WtaToggleRow(
+                    title = Strings.apkLoggingTitle,
+                    subtitle = Strings.apkLoggingHint.ifDescriptionsShown(),
+                    icon = Icons.Outlined.Description,
+                    checked = config.loggingEnabled,
+                    onCheckedChange = { onConfigChange(config.copy(loggingEnabled = it)) }
+                )
+                WtaSectionDivider()
+                WtaToggleRow(
+                    title = Strings.saepPolicyTitle,
+                    subtitle = Strings.saepPolicyHint.ifDescriptionsShown(),
+                    checked = config.saepEnabled,
+                    onCheckedChange = { onConfigChange(config.copy(saepEnabled = it)) }
                 )
             }
+            PerformanceOptimizationSection(
+                config = config,
+                onConfigChange = onConfigChange
+            )
         }
 
         if (onOpenPermissionConfig != null) {
@@ -364,11 +345,6 @@ fun ApkExportSection(
             }
         )
 
-        PerformanceOptimizationSection(
-            config = config,
-            onConfigChange = onConfigChange
-        )
-
         WtaSection(
             title = Strings.signingSectionTitle,
             headerStyle = WtaSectionHeaderStyle.Quiet,
@@ -387,21 +363,16 @@ private fun PerformanceOptimizationSection(
     config: ApkExportConfig,
     onConfigChange: (ApkExportConfig) -> Unit
 ) {
-    WtaSection(
-        title = Strings.performanceOptimization,
-        headerStyle = WtaSectionHeaderStyle.Quiet,
-        collapsible = true,
-        initiallyExpanded = false
-    ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            WtaToggleRow(
-                title = Strings.performanceOptimization,
-                subtitle = if (config.performanceOptimization) Strings.perfEnabled else Strings.perfDisabled,
-                icon = Icons.Outlined.Speed,
-                checked = config.performanceOptimization,
-                onCheckedChange = { onConfigChange(config.copy(performanceOptimization = it)) }
-            )
-        }
+    Column(modifier = Modifier.fillMaxWidth()) {
+        WtaSectionDivider()
+        WtaToggleRow(
+            title = Strings.performanceOptimization,
+            subtitle = if (config.performanceOptimization) Strings.perfEnabled else Strings.perfDisabled,
+            icon = Icons.Outlined.Speed,
+            checked = config.performanceOptimization,
+            onCheckedChange = { onConfigChange(config.copy(performanceOptimization = it)) }
+        )
+    }
 
         AnimatedVisibility(
             visible = config.performanceOptimization,
@@ -546,7 +517,6 @@ private fun PerformanceOptimizationSection(
             }
         }
     }
-}
 
 @Composable
 private fun NetworkTrustConfigPanel(
@@ -569,7 +539,6 @@ private fun NetworkTrustConfigPanel(
 
     WtaSection(
         title = Strings.networkTrustTitle,
-        description = Strings.networkTrustHint.ifDescriptionsShown(),
         headerStyle = WtaSectionHeaderStyle.Quiet,
         collapsible = true,
         initiallyExpanded = false

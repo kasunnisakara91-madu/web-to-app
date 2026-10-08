@@ -748,6 +748,45 @@ object StringsB {
         AppLanguage.KOREAN -> "개발자"
     }
 
+    val sectionBrowserIdentity: String get() = when (Strings.lang) {
+        AppLanguage.CHINESE -> "浏览器身份"
+        AppLanguage.ENGLISH -> "Browser Identity"
+        AppLanguage.ARABIC -> "هوية المتصفح"
+        AppLanguage.PORTUGUESE -> "Identidade do Navegador"
+        AppLanguage.SPANISH -> "Identidad del navegador"
+        AppLanguage.FRENCH -> "Identité du navigateur"
+        AppLanguage.GERMAN -> "Browser-Identität"
+        AppLanguage.RUSSIAN -> "Идентификация браузера"
+        AppLanguage.JAPANESE -> "ブラウザ識別"
+        AppLanguage.KOREAN -> "브라우저 신원"
+    }
+
+    val sectionOfflineCache: String get() = when (Strings.lang) {
+        AppLanguage.CHINESE -> "离线与缓存"
+        AppLanguage.ENGLISH -> "Offline & Cache"
+        AppLanguage.ARABIC -> "عدم الاتصال والتخزين المؤقت"
+        AppLanguage.PORTUGUESE -> "Offline e Cache"
+        AppLanguage.SPANISH -> "Sin conexión y caché"
+        AppLanguage.FRENCH -> "Hors ligne et cache"
+        AppLanguage.GERMAN -> "Offline & Cache"
+        AppLanguage.RUSSIAN -> "Офлайн и кэш"
+        AppLanguage.JAPANESE -> "オフラインとキャッシュ"
+        AppLanguage.KOREAN -> "오프라인 및 캐시"
+    }
+
+    val sectionNetworkAccess: String get() = when (Strings.lang) {
+        AppLanguage.CHINESE -> "网络接入"
+        AppLanguage.ENGLISH -> "Network Access"
+        AppLanguage.ARABIC -> "الوصول إلى الشبكة"
+        AppLanguage.PORTUGUESE -> "Acesso à Rede"
+        AppLanguage.SPANISH -> "Acceso a la red"
+        AppLanguage.FRENCH -> "Accès réseau"
+        AppLanguage.GERMAN -> "Netzwerkzugang"
+        AppLanguage.RUSSIAN -> "Доступ к сети"
+        AppLanguage.JAPANESE -> "ネットワーク接続"
+        AppLanguage.KOREAN -> "네트워크 접속"
+    }
+
     val selectCategory: String get() = when (Strings.lang) {
         AppLanguage.CHINESE -> "选择分类"
         AppLanguage.ENGLISH -> "Select Category"
@@ -1279,19 +1318,6 @@ object StringsB {
         AppLanguage.RUSSIAN -> "com.example.myapp"
         AppLanguage.JAPANESE -> "com.example.myapp"
         AppLanguage.KOREAN -> "com.example.myapp"
-    }
-
-    val apkConfigNote: String get() = when (Strings.lang) {
-        AppLanguage.CHINESE -> "以下配置仅在打包APK时生效"
-        AppLanguage.ENGLISH -> "The following settings only take effect when building APK"
-        AppLanguage.ARABIC -> "الإعدادات التالية تسري فقط عند بناء APK"
-        AppLanguage.PORTUGUESE -> "As configurações abaixo só têm efeito ao construir o APK"
-        AppLanguage.SPANISH -> "Las siguientes configuraciones solo aplican al construir el APK"
-        AppLanguage.FRENCH -> "Les paramètres ci-dessous ne prennent effet qu'à la construction de l'APK"
-        AppLanguage.GERMAN -> "Die folgenden Einstellungen gelten nur beim APK-Build"
-        AppLanguage.RUSSIAN -> "Следующие настройки действуют только при сборке APK"
-        AppLanguage.JAPANESE -> "以下の設定は APK ビルド時にのみ有効です"
-        AppLanguage.KOREAN -> "다음 설정은 APK 빌드 시에만 적용됩니다"
     }
 
     val versionName: String get() = when (Strings.lang) {

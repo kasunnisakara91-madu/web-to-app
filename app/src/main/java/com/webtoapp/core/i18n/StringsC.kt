@@ -5368,19 +5368,6 @@ object StringsC {
         AppLanguage.KOREAN -> "네트워크 신뢰"
     }
 
-    val networkTrustHint: String get() = when (Strings.lang) {
-        AppLanguage.CHINESE -> "控制导出 APK 的 HTTPS 证书信任来源"
-        AppLanguage.ENGLISH -> "Control HTTPS certificate trust sources for exported APKs"
-        AppLanguage.ARABIC -> "التحكم في مصادر الثقة لشهادات HTTPS في ملفات APK المصدرة"
-        AppLanguage.PORTUGUESE -> "Controlar fontes de confiança de certificados HTTPS para APKs exportados"
-        AppLanguage.SPANISH -> "Controlar fuentes de confianza de certificados HTTPS para APKs exportados"
-        AppLanguage.FRENCH -> "Contrôler les sources de confiance des certificats HTTPS pour les APK exportés"
-        AppLanguage.GERMAN -> "HTTPS-Zertifikatsvertrauensquellen für exportierte APKs steuern"
-        AppLanguage.RUSSIAN -> "Управление источниками доверия сертификатов HTTPS для экспортируемых APK"
-        AppLanguage.JAPANESE -> "エクスポートしたAPKのHTTPS証明書信頼ソースを制御"
-        AppLanguage.KOREAN -> "내보낸 APK의 HTTPS 인증서 신뢰 소스 제어"
-    }
-
     val trustSystemCa: String get() = when (Strings.lang) {
         AppLanguage.CHINESE -> "信任系统 CA"
         AppLanguage.ENGLISH -> "Trust System CA"
@@ -7577,16 +7564,29 @@ object StringsC {
     }
 
     val apkIdentityBuildSection: String get() = when (Strings.lang) {
-        AppLanguage.CHINESE -> "应用标识与构建"
-        AppLanguage.ENGLISH -> "Identity & Build"
-        AppLanguage.ARABIC -> "الهوية والبناء"
-        AppLanguage.PORTUGUESE -> "Identidade & Build"
-        AppLanguage.SPANISH -> "Identidad & Compilación"
-        AppLanguage.FRENCH -> "Identité & Compilation"
-        AppLanguage.GERMAN -> "Identität & Build"
-        AppLanguage.RUSSIAN -> "Идентификатор и сборка"
-        AppLanguage.JAPANESE -> "アプリIDとビルド"
-        AppLanguage.KOREAN -> "앱 ID 및 빌드"
+        AppLanguage.CHINESE -> "应用标识"
+        AppLanguage.ENGLISH -> "App Identity"
+        AppLanguage.ARABIC -> "هوية التطبيق"
+        AppLanguage.PORTUGUESE -> "Identidade do App"
+        AppLanguage.SPANISH -> "Identidad de la app"
+        AppLanguage.FRENCH -> "Identité de l'app"
+        AppLanguage.GERMAN -> "App-Identität"
+        AppLanguage.RUSSIAN -> "Идентификатор приложения"
+        AppLanguage.JAPANESE -> "アプリ識別"
+        AppLanguage.KOREAN -> "앱 식별"
+    }
+
+    val apkBuildOptionsSection: String get() = when (Strings.lang) {
+        AppLanguage.CHINESE -> "构建选项"
+        AppLanguage.ENGLISH -> "Build Options"
+        AppLanguage.ARABIC -> "خيارات البناء"
+        AppLanguage.PORTUGUESE -> "Opções de Build"
+        AppLanguage.SPANISH -> "Opciones de compilación"
+        AppLanguage.FRENCH -> "Options de compilation"
+        AppLanguage.GERMAN -> "Build-Optionen"
+        AppLanguage.RUSSIAN -> "Параметры сборки"
+        AppLanguage.JAPANESE -> "ビルド設定"
+        AppLanguage.KOREAN -> "빌드 옵션"
     }
 
     val signingSectionTitle: String get() = when (Strings.lang) {

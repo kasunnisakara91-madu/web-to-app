@@ -10847,6 +10847,66 @@ object StringsE {
         AppLanguage.JAPANESE -> "基本スイッチ"
         AppLanguage.KOREAN -> "기본 토글"
     }
+    val specialBrowsingSectionTitle: String get() = when (Strings.lang) {
+        AppLanguage.CHINESE -> "浏览体验"
+        AppLanguage.ENGLISH -> "Browsing"
+        AppLanguage.ARABIC -> "تجربة التصفح"
+        AppLanguage.PORTUGUESE -> "Experiência de Navegação"
+        AppLanguage.SPANISH -> "Experiencia de navegación"
+        AppLanguage.FRENCH -> "Expérience de navigation"
+        AppLanguage.GERMAN -> "Browser-Erlebnis"
+        AppLanguage.RUSSIAN -> "Просмотр"
+        AppLanguage.JAPANESE -> "閲覧体験"
+        AppLanguage.KOREAN -> "탐색 경험"
+    }
+    val specialMediaSectionTitle: String get() = when (Strings.lang) {
+        AppLanguage.CHINESE -> "媒体播放"
+        AppLanguage.ENGLISH -> "Media Playback"
+        AppLanguage.ARABIC -> "تشغيل الوسائط"
+        AppLanguage.PORTUGUESE -> "Reprodução de Mídia"
+        AppLanguage.SPANISH -> "Reproducción multimedia"
+        AppLanguage.FRENCH -> "Lecture multimédia"
+        AppLanguage.GERMAN -> "Medienwiedergabe"
+        AppLanguage.RUSSIAN -> "Воспроизведение"
+        AppLanguage.JAPANESE -> "メディア再生"
+        AppLanguage.KOREAN -> "미디어 재생"
+    }
+    val specialSystemBridgeSectionTitle: String get() = when (Strings.lang) {
+        AppLanguage.CHINESE -> "系统桥接"
+        AppLanguage.ENGLISH -> "System Bridge"
+        AppLanguage.ARABIC -> "جسر النظام"
+        AppLanguage.PORTUGUESE -> "Ponte do Sistema"
+        AppLanguage.SPANISH -> "Puente del sistema"
+        AppLanguage.FRENCH -> "Pont système"
+        AppLanguage.GERMAN -> "Systembrücke"
+        AppLanguage.RUSSIAN -> "Системный мост"
+        AppLanguage.JAPANESE -> "システム連携"
+        AppLanguage.KOREAN -> "시스템 브리지"
+    }
+    val specialLinksSectionTitle: String get() = when (Strings.lang) {
+        AppLanguage.CHINESE -> "链接与下载"
+        AppLanguage.ENGLISH -> "Links & Downloads"
+        AppLanguage.ARABIC -> "الروابط والتنزيلات"
+        AppLanguage.PORTUGUESE -> "Links e Downloads"
+        AppLanguage.SPANISH -> "Enlaces y descargas"
+        AppLanguage.FRENCH -> "Liens et téléchargements"
+        AppLanguage.GERMAN -> "Links & Downloads"
+        AppLanguage.RUSSIAN -> "Ссылки и загрузки"
+        AppLanguage.JAPANESE -> "リンクとダウンロード"
+        AppLanguage.KOREAN -> "링크 및 다운로드"
+    }
+    val specialSiteCompatSectionTitle: String get() = when (Strings.lang) {
+        AppLanguage.CHINESE -> "站点兼容"
+        AppLanguage.ENGLISH -> "Site Compatibility"
+        AppLanguage.ARABIC -> "توافق الموقع"
+        AppLanguage.PORTUGUESE -> "Compatibilidade do Site"
+        AppLanguage.SPANISH -> "Compatibilidad del sitio"
+        AppLanguage.FRENCH -> "Compatibilité du site"
+        AppLanguage.GERMAN -> "Website-Kompatibilität"
+        AppLanguage.RUSSIAN -> "Совместимость сайта"
+        AppLanguage.JAPANESE -> "サイト互換"
+        AppLanguage.KOREAN -> "사이트 호환"
+    }
 
     val base64ModeLabel: String get() = when (Strings.lang) { AppLanguage.CHINESE -> "触发模式"; AppLanguage.ENGLISH -> "Trigger Mode"; AppLanguage.ARABIC -> "وضع التشغيل"; AppLanguage.PORTUGUESE -> "Modo de Gatilho"; AppLanguage.SPANISH -> "Modo de Disparo"; AppLanguage.FRENCH -> "Mode de déclenchement"; AppLanguage.GERMAN -> "Auslösemodus"; AppLanguage.RUSSIAN -> "Режим запуска"; AppLanguage.JAPANESE -> "トリガーモード"; AppLanguage.KOREAN -> "트리거 모드"; }
     val base64ModeGesture: String get() = when (Strings.lang) { AppLanguage.CHINESE -> "仅手势触发"; AppLanguage.ENGLISH -> "Gesture Only"; AppLanguage.ARABIC -> "بإيماءة فقط"; AppLanguage.PORTUGUESE -> "Apenas por Gesto"; AppLanguage.SPANISH -> "Solo por Gesto"; AppLanguage.FRENCH -> "Geste uniquement"; AppLanguage.GERMAN -> "Nur Geste"; AppLanguage.RUSSIAN -> "Только жест"; AppLanguage.JAPANESE -> "ジェスチャーのみ"; AppLanguage.KOREAN -> "제스처 전용"; }

@@ -1135,6 +1135,9 @@ object Strings {
     val sectionNavigation: String get() = StringsB.sectionNavigation
     val sectionOfflinePerformance: String get() = StringsB.sectionOfflinePerformance
     val sectionDeveloper: String get() = StringsB.sectionDeveloper
+    val sectionBrowserIdentity: String get() = StringsB.sectionBrowserIdentity
+    val sectionOfflineCache: String get() = StringsB.sectionOfflineCache
+    val sectionNetworkAccess: String get() = StringsB.sectionNetworkAccess
     val selectCategory: String get() = StringsB.selectCategory
     val runTime: String get() = StringsB.runTime
     val requiredPermissions: String get() = StringsB.requiredPermissions
@@ -1176,7 +1179,6 @@ object Strings {
     val packageNameInvalidFormat: String get() = StringsB.packageNameInvalidFormat
     val packageNameHint: String get() = StringsB.packageNameHint
     val apkPackageNamePlaceholder: String get() = StringsB.apkPackageNamePlaceholder
-    val apkConfigNote: String get() = StringsB.apkConfigNote
     val versionName: String get() = StringsB.versionName
     val apkVersionNamePlaceholder: String get() = StringsB.apkVersionNamePlaceholder
     val versionCode: String get() = StringsB.versionCode
@@ -2491,7 +2493,6 @@ object Strings {
     val capabilityAppearanceMedia: String get() = StringsC.capabilityAppearanceMedia
     val capabilityAppearanceMediaHint: String get() = StringsC.capabilityAppearanceMediaHint
     val networkTrustTitle: String get() = StringsC.networkTrustTitle
-    val networkTrustHint: String get() = StringsC.networkTrustHint
     val trustSystemCa: String get() = StringsC.trustSystemCa
     val trustSystemCaHint: String get() = StringsC.trustSystemCaHint
     val trustUserCa: String get() = StringsC.trustUserCa
@@ -2663,6 +2664,7 @@ object Strings {
     val trimRangeHint: String get() = StringsC.trimRangeHint
     val apkExportConfig: String get() = StringsC.apkExportConfig
     val apkIdentityBuildSection: String get() = StringsC.apkIdentityBuildSection
+    val apkBuildOptionsSection: String get() = StringsC.apkBuildOptionsSection
     val signingSectionTitle: String get() = StringsC.signingSectionTitle
     val apkArchitecture: String get() = StringsC.apkArchitecture
     val apkLoggingTitle: String get() = StringsC.apkLoggingTitle
@@ -4718,6 +4720,11 @@ object Strings {
     val fullscreenVideoOrientationModeForce: String get() = StringsE.fullscreenVideoOrientationModeForce
     val specialAdvancedSectionTitle: String get() = StringsE.specialAdvancedSectionTitle
     val specialBasicSectionTitle: String get() = StringsE.specialBasicSectionTitle
+    val specialBrowsingSectionTitle: String get() = StringsE.specialBrowsingSectionTitle
+    val specialMediaSectionTitle: String get() = StringsE.specialMediaSectionTitle
+    val specialSystemBridgeSectionTitle: String get() = StringsE.specialSystemBridgeSectionTitle
+    val specialLinksSectionTitle: String get() = StringsE.specialLinksSectionTitle
+    val specialSiteCompatSectionTitle: String get() = StringsE.specialSiteCompatSectionTitle
     val base64ModeLabel: String get() = StringsE.base64ModeLabel
     val base64ModeGesture: String get() = StringsE.base64ModeGesture
     val base64ModeAlways: String get() = StringsE.base64ModeAlways
